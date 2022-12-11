@@ -60,5 +60,5 @@ export class FlexVersions {
     flex_schema_version: string = "";
 
     @Column("json")
-    polygon!: Polygon;
+    polygon: Polygon = new Polygon();
 }

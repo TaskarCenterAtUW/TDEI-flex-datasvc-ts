@@ -1,3 +1,4 @@
+import { Polygon } from "./polygon-model";
 
 export class GtfsFlexDTO {
     tdei_record_id: string = "";
@@ -10,4 +11,5 @@ export class GtfsFlexDTO {
     valid_to: Date = new Date();
     data_source: string = "";
     flex_schema_version: string = "";
+    polygon: Polygon = new Polygon();
 }
