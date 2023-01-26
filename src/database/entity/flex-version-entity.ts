@@ -1,7 +1,8 @@
 import { IsNotEmpty } from 'class-validator';
+import { BaseDto } from '../../model/base-dto';
 import { Polygon } from "../../model/polygon-model";
 
-export class FlexVersions {
+export class FlexVersions extends BaseDto {
     id!: number;
     @IsNotEmpty()
     tdei_record_id: string = "";
@@ -28,4 +29,11 @@ export class FlexVersions {
     data_source: string = "";
     @IsNotEmpty()
     flex_schema_version: string = "";
+    @IsNotEmpty()
+    polygon: any = {};
+
+    constructor(init?: Partial<FlexVersions>) {
+        super();
+        Object.assign(this, init);
+    }
 }
