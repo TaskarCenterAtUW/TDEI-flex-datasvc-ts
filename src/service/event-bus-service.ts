@@ -1,10 +1,10 @@
-import { FlexVersions } from "../../database/entity/flex-version-entity";
-import { GtfsFlexUploadModel } from "../../model/gtfs-flex-upload-model";
-import gtfsFlexService from "../gtfs-flex-service";
+import { FlexVersions } from "../database/entity/flex-version-entity";
+import { GtfsFlexUploadModel } from "../model/gtfs-flex-upload-model";
+import gtfsFlexService from "./gtfs-flex-service";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
 import { validate } from 'class-validator';
 import { AzureQueueConfig } from "nodets-ms-core/lib/core/queue/providers/azure-queue-config";
-import { environment } from "../../environment/environment";
+import { environment } from "../environment/environment";
 import { Core } from "nodets-ms-core";
 
 class EventBusService implements IEventBusServiceInterface {

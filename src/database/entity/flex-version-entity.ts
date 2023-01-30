@@ -37,6 +37,10 @@ export class FlexVersions extends BaseDto {
         Object.assign(this, init);
     }
 
+    /**
+     * Builds the insert QueryConfig object
+     * @returns QueryConfig object
+     */
     getInsertQuery(): QueryConfig {
         const queryObject = {
             text: `INSERT INTO public.flex_versions(tdei_record_id, 

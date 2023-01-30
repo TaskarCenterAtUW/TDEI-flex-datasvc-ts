@@ -8,8 +8,7 @@ import HttpException from "../exceptions/http/http-base-exception";
 import { DuplicateException } from "../exceptions/http/http-exceptions";
 import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
 import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
-import { Utility } from "../utility/utility";
-import { IGtfsFlexService } from "./gtfs-flex-service-interface";
+import { IGtfsFlexService } from "./interface/gtfs-flex-service-interface";
 
 class GtfsFlexService implements IGtfsFlexService {
     constructor() {
@@ -73,5 +72,5 @@ class GtfsFlexService implements IGtfsFlexService {
     }
 }
 
-const gtfsFlexService = new GtfsFlexService();
+const gtfsFlexService: IGtfsFlexService = new GtfsFlexService();
 export default gtfsFlexService;
