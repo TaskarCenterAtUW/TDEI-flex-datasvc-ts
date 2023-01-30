@@ -9,7 +9,7 @@ describe("POST /api/v1/gtfsflex", () => {
     test("returns list of flex", async () => {
 
         const mockRequest = {
-            url: "http://localhost:8080",
+            url: "http://localhost:" + process.env.APPLICATION_PORT ?? "8080",
             query: {}
         } as Request;
         let responseObj = {};
