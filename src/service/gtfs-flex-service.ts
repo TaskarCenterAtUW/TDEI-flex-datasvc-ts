@@ -29,7 +29,7 @@ class GtfsFlexService implements IGtfsFlexService {
         let list: GtfsFlexDTO[] = [];
         result.rows.forEach(x => {
 
-            let flex: GtfsFlexDTO = Utility.copy<GtfsFlexDTO>(new GtfsFlexDTO(), x);;
+            let flex = GtfsFlexDTO.from(x);
             list.push(flex);
         })
         return Promise.resolve(list);
@@ -54,25 +54,10 @@ class GtfsFlexService implements IGtfsFlexService {
     async createAGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
         try {
             flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path!);
-            const queryObject = {
-                text: `INSERT INTO public.flex_versions(tdei_record_id, 
-                    confidence_level, 
-                    tdei_org_id, 
-                    tdei_service_id, 
-                    file_upload_path, 
-                    uploaded_by,
-                    collected_by, 
-                    collection_date, 
-                    collection_method, valid_from, valid_to, data_source,
-                    flex_schema_version)
-                    VALUES ($1,0,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`.replace(/\n/g, ""),
-                values: [flexInfo.tdei_record_id, flexInfo.tdei_org_id, flexInfo.tdei_service_id, flexInfo.file_upload_path, flexInfo.uploaded_by
-                    , flexInfo.collected_by, flexInfo.collection_date, flexInfo.collection_method, flexInfo.valid_from, flexInfo.valid_to, flexInfo.data_source, flexInfo.flex_schema_version],
-            }
 
-            let result = await dbClient.query(queryObject);
+            await dbClient.query(flexInfo.getInsertQuery());
 
-            let pathway: GtfsFlexDTO = Utility.copy<GtfsFlexDTO>(new GtfsFlexDTO(), flexInfo);
+            let pathway = GtfsFlexDTO.from(flexInfo);
 
             return Promise.resolve(pathway);
         } catch (error) {

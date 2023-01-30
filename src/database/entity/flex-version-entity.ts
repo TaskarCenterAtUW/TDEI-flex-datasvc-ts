@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { QueryConfig } from 'pg';
 import { BaseDto } from '../../model/base-dto';
 import { Polygon } from "../../model/polygon-model";
 
@@ -29,11 +30,29 @@ export class FlexVersions extends BaseDto {
     data_source: string = "";
     @IsNotEmpty()
     flex_schema_version: string = "";
-    @IsNotEmpty()
     polygon: any = {};
 
     constructor(init?: Partial<FlexVersions>) {
         super();
         Object.assign(this, init);
+    }
+
+    getInsertQuery(): QueryConfig {
+        const queryObject = {
+            text: `INSERT INTO public.flex_versions(tdei_record_id, 
+                confidence_level, 
+                tdei_org_id, 
+                tdei_service_id, 
+                file_upload_path, 
+                uploaded_by,
+                collected_by, 
+                collection_date, 
+                collection_method, valid_from, valid_to, data_source,
+                flex_schema_version)
+                VALUES ($1,0,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`.replace(/\n/g, ""),
+            values: [this.tdei_record_id, this.tdei_org_id, this.tdei_service_id, this.file_upload_path, this.uploaded_by
+                , this.collected_by, this.collection_date, this.collection_method, this.valid_from, this.valid_to, this.data_source, this.flex_schema_version],
+        }
+        return queryObject;
     }
 }
