@@ -1,7 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { QueryConfig } from 'pg';
 import { BaseDto } from '../../model/base-dto';
-import { Polygon } from "../../model/polygon-model";
 
 export class FlexVersions extends BaseDto {
     id!: number;
@@ -37,6 +36,10 @@ export class FlexVersions extends BaseDto {
         Object.assign(this, init);
     }
 
+    /**
+     * Builds the insert QueryConfig object
+     * @returns QueryConfig object
+     */
     getInsertQuery(): QueryConfig {
         const queryObject = {
             text: `INSERT INTO public.flex_versions(tdei_record_id, 
