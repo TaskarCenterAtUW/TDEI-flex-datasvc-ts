@@ -1,6 +1,5 @@
 import { FlexVersions } from "../../database/entity/flex-version-entity";
 import { GtfsFlexUploadModel } from "../../model/gtfs-flex-upload-model";
-import { Utility } from "../../utility/utility";
 import gtfsFlexService from "../gtfs-flex-service";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
 import { validate } from 'class-validator';
@@ -25,10 +24,9 @@ class EventBusService implements IEventBusServiceInterface {
             }
 
             var gtfsFlexUploadModel = messageReceived.data as GtfsFlexUploadModel;
-            var flexVersions: FlexVersions = new FlexVersions();
+            var flexVersions: FlexVersions = new FlexVersions(gtfsFlexUploadModel);
             flexVersions.uploaded_by = gtfsFlexUploadModel.user_id;
             console.log(`Received message: ${JSON.stringify(gtfsFlexUploadModel)}`);
-            Utility.copy<FlexVersions>(flexVersions, gtfsFlexUploadModel);
 
             validate(flexVersions).then(errors => {
                 // errors is an array of validation errors

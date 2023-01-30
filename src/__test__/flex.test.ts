@@ -19,12 +19,13 @@ describe("POST /api/v1/gtfsflex", () => {
             })
         };
 
-        const list: GtfsFlexDTO[] = [new GtfsFlexDTO()]
+        const list: GtfsFlexDTO[] = [new GtfsFlexDTO()];
+        let next = jest.fn();
         const spy = jest
             .spyOn(gtfsFlexService, "getAllGtfsFlex")
             .mockResolvedValueOnce(list);
 
-        await gtfsFlexController.getAllGtfsFlex(mockRequest, mockResponse as Response);
+        await gtfsFlexController.getAllGtfsFlex(mockRequest, mockResponse as Response, next);
         expect(responseObj).toEqual(list);
         expect(spy).toHaveBeenCalledTimes(1);
         spy.mockRestore();

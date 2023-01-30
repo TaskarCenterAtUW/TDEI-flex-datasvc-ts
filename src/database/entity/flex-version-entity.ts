@@ -1,64 +1,58 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { IsNotEmpty } from 'class-validator';
+import { QueryConfig } from 'pg';
+import { BaseDto } from '../../model/base-dto';
 import { Polygon } from "../../model/polygon-model";
 
-@Entity()
-export class FlexVersions {
-
-    @PrimaryGeneratedColumn()
+export class FlexVersions extends BaseDto {
     id!: number;
-
-    @Column()
     @IsNotEmpty()
     tdei_record_id: string = "";
-
-    @Column({ nullable: true, default: 0 })
     confidence_level: number = 0;
-
-    @Column()
     @IsNotEmpty()
     tdei_org_id: string = "";
-
-    @Column()
     @IsNotEmpty()
     tdei_service_id: string = "";
-
-    @Column()
     @IsNotEmpty()
     file_upload_path: string = "";
-
-    @Column()
     @IsNotEmpty()
     uploaded_by: string = "";
-
-    @Column()
     @IsNotEmpty()
     collected_by: string = "";
-
-    @Column("timestamp")
     @IsNotEmpty()
     collection_date: Date = new Date();
-
-    @Column()
     @IsNotEmpty()
     collection_method: string = "";
-
-    @Column("timestamp")
     @IsNotEmpty()
     valid_from: Date = new Date();
-
-    @Column("timestamp")
     @IsNotEmpty()
     valid_to: Date = new Date();
-
-    @Column()
     @IsNotEmpty()
     data_source: string = "";
-
-    @Column()
     @IsNotEmpty()
     flex_schema_version: string = "";
+    polygon: any = {};
 
-    @Column("json")
-    polygon: Polygon = new Polygon();
+    constructor(init?: Partial<FlexVersions>) {
+        super();
+        Object.assign(this, init);
+    }
+
+    getInsertQuery(): QueryConfig {
+        const queryObject = {
+            text: `INSERT INTO public.flex_versions(tdei_record_id, 
+                confidence_level, 
+                tdei_org_id, 
+                tdei_service_id, 
+                file_upload_path, 
+                uploaded_by,
+                collected_by, 
+                collection_date, 
+                collection_method, valid_from, valid_to, data_source,
+                flex_schema_version)
+                VALUES ($1,0,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`.replace(/\n/g, ""),
+            values: [this.tdei_record_id, this.tdei_org_id, this.tdei_service_id, this.file_upload_path, this.uploaded_by
+                , this.collected_by, this.collection_date, this.collection_method, this.valid_from, this.valid_to, this.data_source, this.flex_schema_version],
+        }
+        return queryObject;
+    }
 }
