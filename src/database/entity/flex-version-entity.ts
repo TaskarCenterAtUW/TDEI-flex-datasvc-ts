@@ -1,7 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { QueryConfig } from 'pg';
 import { BaseDto } from '../../model/base-dto';
-import { Polygon } from "../../model/polygon-model";
 
 export class FlexVersions extends BaseDto {
     id!: number;

@@ -6,6 +6,7 @@ import { FileEntity } from "nodets-ms-core/lib/core/storage";
 import gtfsFlexService from "../service/gtfs-flex-service";
 import HttpException from "../exceptions/http/http-base-exception";
 import { DuplicateException } from "../exceptions/http/http-exceptions";
+import { FlexVersions } from "../database/entity/flex-version-entity";
 
 class GtfsFlexController implements IController {
     public path = '/api/v1/gtfsflex';
@@ -48,7 +49,7 @@ class GtfsFlexController implements IController {
 
     createAGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
         try {
-            var newGtfsFlex = await gtfsFlexService.createAGtfsFlex(request.body)
+            var newGtfsFlex = await gtfsFlexService.createAGtfsFlex(FlexVersions.from(request.body))
                 .catch((error: any) => {
                     if (error instanceof DuplicateException) {
                         throw error;
