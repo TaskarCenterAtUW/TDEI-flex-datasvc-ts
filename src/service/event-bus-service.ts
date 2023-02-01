@@ -15,7 +15,10 @@ class EventBusService implements IEventBusServiceInterface {
         this.queueConfig.connectionString = environment.eventBus.connectionString as string;
     }
 
-    // function to handle messages
+    /**
+     * Funtion triggers on new message received from the queue
+     * @param messageReceived Mesage from queue
+     */
     private processUpload = async (messageReceived: any) => {
         try {
             if (!messageReceived.data || !messageReceived.data.is_valid) {
@@ -45,12 +48,18 @@ class EventBusService implements IEventBusServiceInterface {
     };
 
 
-    // function to handle any errors
+    /**
+     * Funtion triggers when there is any error while listening/receiving the queue message
+     * @param error Error details
+     */
     private processUploadError = async (error: any) => {
         console.log(error);
     };
 
-    subscribeUpload(): void {
+    /**
+     * Subscribing to the interested topic & subscription to process the queue message
+     */
+    subscribeTopic(): void {
         Core.getTopic(environment.eventBus.validationTopic as string,
             this.queueConfig)
             .subscribe(environment.eventBus.validationSubscription as string, {
@@ -60,5 +69,5 @@ class EventBusService implements IEventBusServiceInterface {
     }
 }
 
-const eventBusService = new EventBusService();
+const eventBusService: IEventBusServiceInterface = new EventBusService();
 export default eventBusService;
