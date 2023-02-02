@@ -1,5 +1,5 @@
 # Introduction 
-Data service (micro-service) helps TDEI system to query information specific to the GTFS flex.
+Data service (micro-service) helps the TDEI system to query information specific to the GTFS flex.
 
 # Getting Started
 The project is built on top of NodeJS framework. All the regular nuances for a NodeJS project are valid for this.
