@@ -7,6 +7,7 @@ import gtfsFlexService from "../service/gtfs-flex-service";
 import HttpException from "../exceptions/http/http-base-exception";
 import { DuplicateException } from "../exceptions/http/http-exceptions";
 import { FlexVersions } from "../database/entity/flex-version-entity";
+import { validate, ValidationError } from "class-validator";
 
 class GtfsFlexController implements IController {
     public path = '/api/v1/gtfsflex';
@@ -49,14 +50,25 @@ class GtfsFlexController implements IController {
 
     createAGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
         try {
-            var newGtfsFlex = await gtfsFlexService.createAGtfsFlex(FlexVersions.from(request.body))
-                .catch((error: any) => {
-                    if (error instanceof DuplicateException) {
-                        throw error;
-                    }
-                    throw new HttpException(500, 'Error saving the flex version');
-                });
-            response.send(newGtfsFlex);
+            let flex = FlexVersions.from(request.body);
+
+            validate(flex).then(async errors => {
+                // errors is an array of validation errors
+                if (errors.length > 0) {
+                    console.error('Upload flex file metadata information failed validation. errors: ', errors);
+                    const message = errors.map((error: ValidationError) => Object.values(<any>error.constraints)).join(', ');
+                    next(new HttpException(500, 'Input validation failed with below reasons : \n' + message));
+                } else {
+                    var newGtfsFlex = await gtfsFlexService.createAGtfsFlex(flex)
+                        .catch((error: any) => {
+                            if (error instanceof DuplicateException) {
+                                throw error;
+                            }
+                            next(new HttpException(500, 'Error saving the flex version'));
+                        });
+                    response.send(newGtfsFlex);
+                }
+            });
         } catch (error) {
             console.log('Error saving the flex version');
             console.log(error);

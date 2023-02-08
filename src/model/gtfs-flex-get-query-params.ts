@@ -1,14 +1,28 @@
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsOptional, Length, max, min } from "class-validator";
 import { DynamicQueryObject, SqlORder } from "../database/dynamic-query-object";
 import { Utility } from "../utility/utility";
 
 export class FlexQueryParams {
+    @IsOptional()
     flex_schema_version: string | undefined;
+    @IsOptional()
     date_time: string | undefined;
+    @IsOptional()
     tdei_org_id: string | undefined;
+    @IsOptional()
     tdei_record_id: string | undefined;
+    @IsOptional()
     tdei_service_id: string | undefined;
+    @IsOptional()
     confidence_level: number = 0;
+    @IsOptional()
+    @IsArray()
+    @ArrayMinSize(4)
+    @ArrayMaxSize(4)
+    bbox: Array<number> = [];
+    @IsOptional()
     page_no: number = 1;
+    @IsOptional()
     page_size: number = 10;
 
     constructor(init?: Partial<FlexQueryParams>) {
@@ -21,9 +35,9 @@ export class FlexQueryParams {
      */
     getQueryObject() {
         let queryObject: DynamicQueryObject = new DynamicQueryObject();
-        queryObject.buildSelect("flex_versions", ["*"]);
+        queryObject.buildSelect("flex_versions", ["ST_AsGeoJSON(polygon) as polygon2, *"]);
         queryObject.buildPagination(this.page_no, this.page_size);
-        queryObject.buildOrder("updated_date", SqlORder.DESC);
+        queryObject.buildOrder("uploaded_date", SqlORder.DESC);
         //Add conditions
         if (this.flex_schema_version)
             queryObject.condition(` flex_schema_version = $${queryObject.paramCouter++} `, this.flex_schema_version);
@@ -35,6 +49,10 @@ export class FlexQueryParams {
             queryObject.condition(` tdei_service_id = $${queryObject.paramCouter++} `, this.tdei_service_id);
         if (this.date_time && Utility.dateIsValid(this.date_time))
             queryObject.condition(` valid_to > $${queryObject.paramCouter++} `, this.date_time);
+        if (this.bbox) {
+            queryObject.condition(`polygon && ST_MakeEnvelope($${queryObject.paramCouter++},$${queryObject.paramCouter++},$${queryObject.paramCouter++},$${queryObject.paramCouter++}, 4326)`,
+                this.bbox);
+        }
 
         return queryObject;
     }

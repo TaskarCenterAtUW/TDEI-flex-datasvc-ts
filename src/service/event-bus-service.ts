@@ -1,11 +1,12 @@
 import { FlexVersions } from "../database/entity/flex-version-entity";
-import { GtfsFlexUploadModel } from "../model/gtfs-flex-upload-model";
 import gtfsFlexService from "./gtfs-flex-service";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
 import { validate } from 'class-validator';
 import { AzureQueueConfig } from "nodets-ms-core/lib/core/queue/providers/azure-queue-config";
 import { environment } from "../environment/environment";
 import { Core } from "nodets-ms-core";
+import { QueueMessageContent } from "../model/queue-message-model";
+import { Polygon } from "../model/polygon-model";
 
 class EventBusService implements IEventBusServiceInterface {
     private queueConfig: AzureQueueConfig;
@@ -21,29 +22,37 @@ class EventBusService implements IEventBusServiceInterface {
      */
     private processUpload = async (messageReceived: any) => {
         try {
-            if (!messageReceived.data || !messageReceived.data.is_valid) {
-                console.log("Not valid information received :", messageReceived);
+            var queueMessage = QueueMessageContent.from(messageReceived.data);
+            if (!queueMessage.response.success && !queueMessage.meta.isValid) {
+                console.error("Failed workflow request received:", messageReceived);
                 return;
             }
 
-            var gtfsFlexUploadModel = messageReceived.data as GtfsFlexUploadModel;
-            var flexVersions: FlexVersions = new FlexVersions(gtfsFlexUploadModel);
-            flexVersions.uploaded_by = gtfsFlexUploadModel.user_id;
-            console.log(`Received message: ${JSON.stringify(gtfsFlexUploadModel)}`);
+            if (!await queueMessage.hasPermission(["tdei-admin", "poc", "flex_data_generator"])) {
+                return;
+            }
+
+            var flexVersions: FlexVersions = FlexVersions.from(queueMessage.request);
+            flexVersions.tdei_record_id = queueMessage.tdeiRecordId;
+            flexVersions.uploaded_by = queueMessage.userId;
+            flexVersions.file_upload_path = queueMessage.meta.file_upload_path;
+            //This line will instantiate the polygon class and set defult class values
+            flexVersions.polygon = new Polygon({ coordinates: flexVersions.polygon.coordinates });
+            console.info(`Received message: ${messageReceived.data}`);
 
             validate(flexVersions).then(errors => {
                 // errors is an array of validation errors
                 if (errors.length > 0) {
-                    console.log('Upload flex file metadata information failed validation. errors: ', errors);
+                    console.error('Upload flex file metadata information failed validation. errors: ', errors);
                 } else {
                     gtfsFlexService.createAGtfsFlex(flexVersions).catch((error: any) => {
-                        console.log('Error saving the flex version');
-                        console.log(error);
+                        console.error('Error saving the flex version');
+                        console.error(error);
                     });;
                 }
             });
         } catch (error) {
-            console.log("Error processing the upload message : error ", error, "message: ", messageReceived);
+            console.error("Error processing the upload message : error ", error, "message: ", messageReceived);
         }
     };
 
@@ -53,7 +62,7 @@ class EventBusService implements IEventBusServiceInterface {
      * @param error Error details
      */
     private processUploadError = async (error: any) => {
-        console.log(error);
+        console.error(error);
     };
 
     /**

@@ -8,12 +8,17 @@ import HttpException from "../exceptions/http/http-base-exception";
 import { DuplicateException } from "../exceptions/http/http-exceptions";
 import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
 import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
+import { PolygonDto } from "../model/polygon-model";
 import { IGtfsFlexService } from "./interface/gtfs-flex-service-interface";
 
 class GtfsFlexService implements IGtfsFlexService {
     constructor() {
     }
 
+    /**
+    * Gets the GTFS Flex details
+    * @param params Query params
+    */
     async getAllGtfsFlex(params: FlexQueryParams): Promise<GtfsFlexDTO[]> {
         //Builds the query object. All the query consitions can be build in getQueryObject()
         let queryObject = params.getQueryObject();
@@ -29,11 +34,17 @@ class GtfsFlexService implements IGtfsFlexService {
         result.rows.forEach(x => {
 
             let flex = GtfsFlexDTO.from(x);
+            if (flex.polygon)
+                flex.polygon = new PolygonDto({ coordinates: JSON.parse(x.polygon2).coordinates });
             list.push(flex);
         })
         return Promise.resolve(list);
     }
 
+    /**
+   * 
+   * @param id Record Id of the GTFS Flex file to be downloaded
+   */
     async getGtfsFlexById(id: string): Promise<FileEntity> {
         const query = {
             text: 'Select file_upload_path from flex_versions WHERE tdei_record_id = $1',
@@ -50,15 +61,18 @@ class GtfsFlexService implements IGtfsFlexService {
         return storageClient.getFileFromUrl(url);
     }
 
+    /**
+    * Creates new GTFS Flex in the TDEI system.
+    * @param pathwayInfo GTFS Flex object 
+    */
     async createAGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
         try {
             flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path!);
 
             await dbClient.query(flexInfo.getInsertQuery());
 
-            let pathway = GtfsFlexDTO.from(flexInfo);
-
-            return Promise.resolve(pathway);
+            let flex = GtfsFlexDTO.from(flexInfo);
+            return Promise.resolve(flex);
         } catch (error) {
 
             if (error instanceof UniqueKeyDbException) {
