@@ -49,7 +49,7 @@ export class FlexQueryParams {
             queryObject.condition(` tdei_service_id = $${queryObject.paramCouter++} `, this.tdei_service_id);
         if (this.date_time && Utility.dateIsValid(this.date_time))
             queryObject.condition(` valid_to > $${queryObject.paramCouter++} `, this.date_time);
-        if (this.bbox) {
+        if (this.bbox && this.bbox.length > 0) {
             queryObject.condition(`polygon && ST_MakeEnvelope($${queryObject.paramCouter++},$${queryObject.paramCouter++},$${queryObject.paramCouter++},$${queryObject.paramCouter++}, 4326)`,
                 this.bbox);
         }
