@@ -2,12 +2,9 @@ import { Request, Response } from "express";
 import healthController from "../controller/health-controller";
 
 // group test using describe
-describe("POST /health/ping", () => {
-
-    test("returns status 200 if healthy", async () => {
-
+describe("Health of the Service", () => {
+    it("Should return 'Healthy' if service is up and running", async () => {
         const mockRequest = {
-            url: "http://localhost:8080",
             query: {}
         } as Request;
         let responseObj = {};

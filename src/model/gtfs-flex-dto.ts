@@ -1,5 +1,5 @@
 import { AbstractDomainEntity, Prop } from "nodets-ms-core/lib/models";
-import { Polygon } from "./polygon-model";
+import { PolygonDto } from "./polygon-model";
 
 export class GtfsFlexDTO extends AbstractDomainEntity {
     @Prop()
@@ -23,5 +23,5 @@ export class GtfsFlexDTO extends AbstractDomainEntity {
     @Prop()
     flex_schema_version: string = "";
     @Prop()
-    polygon: Polygon = new Polygon();
+    polygon: PolygonDto | undefined;
 }

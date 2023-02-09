@@ -32,7 +32,7 @@ class App {
     }
 
     private subscribeUpload() {
-        eventBusService.subscribeUpload();
+        eventBusService.subscribeTopic();
     }
 
     private initializeMiddlewares() {

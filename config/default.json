@@ -1,0 +1,5 @@
+{
+    "url": {
+        "permission": "https://tdei-auth-n-z-dev.azurewebsites.net/api/v1/hasPermission"
+    }
+}

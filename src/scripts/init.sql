@@ -14,9 +14,10 @@ CREATE TABLE IF NOT EXISTS public.flex_versions
     valid_to timestamp without time zone NOT NULL,
     data_source character varying COLLATE pg_catalog."default" NOT NULL,
     flex_schema_version character varying COLLATE pg_catalog."default" NOT NULL,
-	updated_date timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	uploaded_date timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     polygon geometry,
-    CONSTRAINT "PK_id" PRIMARY KEY (id)
+    CONSTRAINT "PK_id" PRIMARY KEY (id),
+    CONSTRAINT unq_record_id UNIQUE (tdei_record_id)
 )
 
 TABLESPACE pg_default;
