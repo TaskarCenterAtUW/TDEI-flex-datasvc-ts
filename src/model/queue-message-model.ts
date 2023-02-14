@@ -1,9 +1,8 @@
 import { IsNotEmpty } from "class-validator";
+import { Core } from "nodets-ms-core";
+import { PermissionRequest } from "nodets-ms-core/lib/core/auth/model/permission_request";
 import { AbstractDomainEntity, Prop } from "nodets-ms-core/lib/models";
-import config from 'config';
-import fetch, { Response } from "node-fetch";
-
-const permissionUrl: string = config.get('url.permission');
+import { environment } from "../environment/environment";
 
 export class QueueMessageContent extends AbstractDomainEntity {
     @Prop()
@@ -37,29 +36,17 @@ export class QueueMessageContent extends AbstractDomainEntity {
      */
     async hasPermission(roles: tdeiRoles[]): Promise<boolean> {
         try {
-            var url = new URL(permissionUrl);
-            let params = new URLSearchParams();
-            params.append("userId", this.userId);
-            params.append("agencyId", this.orgId);
-            params.append("affirmative", "false");
-            roles.forEach(x => params.append("roles", x));
-            url.search = params.toString();
+            var permissionRequest = new PermissionRequest({
+                userId: this.userId,
+                orgId: this.orgId,
+                permssions: roles,
+                shouldSatisfyAll: false
+            });
+            // With hosted provider 
+            const authProvider = Core.getAuthorizer({ provider: "Hosted", apiUrl: environment.authPermissionUrl });
 
-            const resp: Response = await fetch(url);
-            if (!resp.ok) {
-                console.error("Error validating the request authorization");
-                return false;
-            }
-            else {
-                var satisfied: boolean = await resp.json();
-                if (satisfied) {
-                    return true;
-                }
-                else {
-                    console.error("Unauthorized request.");
-                    return false;
-                }
-            }
+            const response = await authProvider?.hasPermission(permissionRequest);
+            return response ?? false;
         } catch (error) {
             console.error("Error validating the request authorization : ", error);
             return false;
