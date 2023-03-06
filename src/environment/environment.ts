@@ -10,7 +10,8 @@ export const environment = {
     eventBus: {
         connectionString: process.env.EVENT_BUS_CONNECTION,
         validationTopic: process.env.VALIDATION_TOPIC,
-        validationSubscription: process.env.VALIDATION_SUBSCRIPTION
+        validationSubscription: process.env.VALIDATION_SUBSCRIPTION,
+        dataServiceTopic: process.env.DATASVC_TOPIC,
     },
     database: {
         username: process.env.POSTGRES_USER,
