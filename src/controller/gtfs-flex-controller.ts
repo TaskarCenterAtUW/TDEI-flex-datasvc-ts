@@ -28,7 +28,7 @@ class GtfsFlexController implements IController {
             const gtfsFlex = await gtfsFlexService.getAllGtfsFlex(params);
             response.send(gtfsFlex);
         } catch (error) {
-            console.error(error);
+            console.error("Error while fetching the flex information", error);
             next(new HttpException(500, "Error while fetching the flex information"));
         }
     }
@@ -42,8 +42,7 @@ class GtfsFlexController implements IController {
             response.status(200);
             (await fileEntity.getStream()).pipe(response);
         } catch (error) {
-            console.error('Error while getting the file stream');
-            console.error(error);
+            console.error('Error while getting the file stream', error);
             if (error instanceof HttpException)
                 throw next(error);
             next(new HttpException(500, "Error while getting the file stream"));
@@ -72,8 +71,7 @@ class GtfsFlexController implements IController {
                 }
             });
         } catch (error) {
-            console.error('Error saving the flex version');
-            console.error(error);
+            console.error('Error saving the flex version', error);
             next(error);
         }
     }

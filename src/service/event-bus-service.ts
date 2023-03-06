@@ -1,19 +1,25 @@
 import { FlexVersions } from "../database/entity/flex-version-entity";
 import gtfsFlexService from "./gtfs-flex-service";
 import { IEventBusServiceInterface } from "./interface/event-bus-service-interface";
-import { validate } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
 import { AzureQueueConfig } from "nodets-ms-core/lib/core/queue/providers/azure-queue-config";
 import { environment } from "../environment/environment";
 import { Core } from "nodets-ms-core";
 import { QueueMessageContent } from "../model/queue-message-model";
 import { Polygon } from "../model/polygon-model";
+import { Topic } from "nodets-ms-core/lib/core/queue/topic";
+import { QueueMessage } from "nodets-ms-core/lib/core/queue";
+import { randomUUID } from "crypto";
 
 class EventBusService implements IEventBusServiceInterface {
     private queueConfig: AzureQueueConfig;
+    publishingTopic: Topic;
 
     constructor() {
+        Core.initialize();
         this.queueConfig = new AzureQueueConfig();
         this.queueConfig.connectionString = environment.eventBus.connectionString as string;
+        this.publishingTopic = Core.getTopic(environment.eventBus.dataServiceTopic as string);
     }
 
     /**
@@ -21,15 +27,25 @@ class EventBusService implements IEventBusServiceInterface {
      * @param messageReceived Mesage from queue
      */
     private processUpload = async (messageReceived: any) => {
+        var tdeiRecordId = "";
         try {
             var queueMessage = QueueMessageContent.from(messageReceived.data);
-            if (!queueMessage.response.success && !queueMessage.meta.isValid) {
-                console.error("Failed workflow request received:", messageReceived);
-                return;
+
+            tdeiRecordId = queueMessage.tdeiRecordId!;
+
+            console.log("Received message for : ", queueMessage.tdeiRecordId, "Message received for flex processing !");
+
+
+            if (!queueMessage.response.success || !queueMessage.meta.isValid) {
+                let errorMessage = "Received failed workflow request";
+                console.error(queueMessage.tdeiRecordId, errorMessage, messageReceived);
+                return Promise.resolve();
             }
 
             if (!await queueMessage.hasPermission(["tdei-admin", "poc", "flex_data_generator"])) {
-                return;
+                let errorMessage = "Unauthorized request !";
+                console.error(queueMessage.tdeiRecordId, errorMessage);
+                throw Error(errorMessage);
             }
 
             var flexVersions: FlexVersions = FlexVersions.from(queueMessage.request);
@@ -43,16 +59,34 @@ class EventBusService implements IEventBusServiceInterface {
             validate(flexVersions).then(errors => {
                 // errors is an array of validation errors
                 if (errors.length > 0) {
+                    const message = errors.map((error: ValidationError) => Object.values(<any>error.constraints)).join(', ');
                     console.error('Upload flex file metadata information failed validation. errors: ', errors);
+                    throw Error(message);
                 } else {
                     gtfsFlexService.createAGtfsFlex(flexVersions).catch((error: any) => {
-                        console.error('Error saving the flex version');
-                        console.error(error);
+                        console.error('Error saving the flex version', error);
+                        this.publish(messageReceived,
+                            {
+                                success: false,
+                                message: 'Error occured while processing flex request' + error
+                            });
+                        this.publish(messageReceived,
+                            {
+                                success: true,
+                                message: 'OSW request processed successfully !'
+                            });
+                        return Promise.resolve();
                     });;
                 }
             });
         } catch (error) {
-            console.error("Error processing the upload message : error ", error, "message: ", messageReceived);
+            console.error(tdeiRecordId, 'Error occured while processing flex request', error);
+            this.publish(messageReceived,
+                {
+                    success: false,
+                    message: 'Error occured while processing flex request' + error
+                });
+            return Promise.resolve();
         }
     };
 
@@ -76,7 +110,30 @@ class EventBusService implements IEventBusServiceInterface {
                 onError: this.processUploadError
             });
     }
+
+    private publish(queueMessage: QueueMessage, response: {
+        success: boolean,
+        message: string
+    }) {
+        var queueMessageContent: QueueMessageContent = QueueMessageContent.from(queueMessage.data);
+        //Set validation stage
+        queueMessageContent.stage = 'flex-data-service';
+        //Set response
+        queueMessageContent.response.success = response.success;
+        queueMessageContent.response.message = response.message;
+        this.publishingTopic.publish(QueueMessage.from(
+            {
+                messageType: 'flex-data-service',
+                data: queueMessageContent,
+                publishedDate: new Date(),
+                message: "Flex data service output",
+                messageId: randomUUID().toString()
+            }
+        ));
+        console.log("Publishing message for : ", queueMessageContent.tdeiRecordId);
+    }
 }
+
 
 const eventBusService: IEventBusServiceInterface = new EventBusService();
 export default eventBusService;

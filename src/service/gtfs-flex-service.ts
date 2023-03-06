@@ -79,7 +79,7 @@ class GtfsFlexService implements IGtfsFlexService {
                 throw new DuplicateException(flexInfo.tdei_record_id);
             }
 
-            console.log("Error saving the flex version", error);
+            console.error("Error saving the flex version", error);
             return Promise.reject(error);
         }
 
