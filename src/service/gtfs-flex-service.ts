@@ -1,8 +1,9 @@
 import { Core } from "nodets-ms-core";
 import { FileEntity } from "nodets-ms-core/lib/core/storage";
 import { QueryConfig } from "pg";
-import dbClient from "../database/data-source";
 import { FlexVersions } from "../database/entity/flex-version-entity";
+import flexDbClient from "../database/flex-data-source";
+import tdeiDbClient from "../database/tdei-data-source";
 import UniqueKeyDbException from "../exceptions/db/database-exceptions";
 import HttpException from "../exceptions/http/http-base-exception";
 import { DuplicateException } from "../exceptions/http/http-exceptions";
@@ -28,7 +29,7 @@ class GtfsFlexService implements IGtfsFlexService {
             values: queryObject.getValues()
         }
 
-        let result = await dbClient.query(queryConfig);
+        let result = await flexDbClient.query(queryConfig);
 
         let list: GtfsFlexDTO[] = [];
         result.rows.forEach(x => {
@@ -51,7 +52,7 @@ class GtfsFlexService implements IGtfsFlexService {
             values: [id],
         }
 
-        let result = await dbClient.query(query);
+        let result = await flexDbClient.query(query);
 
         if (result.rows.length == 0) throw new HttpException(404, "Record not found");
 
@@ -69,7 +70,18 @@ class GtfsFlexService implements IGtfsFlexService {
         try {
             flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path!);
 
-            await dbClient.query(flexInfo.getInsertQuery());
+            //Validate service_id 
+            let station = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_org_id);
+            if (station) {
+                if (!station.is_active) {
+                    throw new HttpException(400, 'Service id not active');
+                }
+            }
+            else {
+                throw new HttpException(400, 'Service id not found');
+            }
+
+            await flexDbClient.query(flexInfo.getInsertQuery());
 
             let flex = GtfsFlexDTO.from(flexInfo);
             return Promise.resolve(flex);
@@ -83,6 +95,19 @@ class GtfsFlexService implements IGtfsFlexService {
             return Promise.reject(error);
         }
 
+    }
+
+    private async getServiceById(serviceId: string, orgId: string): Promise<any> {
+        const queryObject = {
+            text: `SELECT * FROM Service WHERE service_id = $1 and owner_org= $2 limit 1`.replace(/\n/g, ""),
+            values: [serviceId, orgId],
+        }
+
+        let result = await tdeiDbClient.query(queryObject);
+
+        if (result.rows.length == 0) return Promise.reject(null);
+
+        return result.rows[0];
     }
 }
 

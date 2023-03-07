@@ -14,12 +14,13 @@ export const environment = {
         dataServiceTopic: process.env.DATASVC_TOPIC,
     },
     database: {
-        username: process.env.POSTGRES_USER,
-        host: process.env.POSTGRES_HOST,
-        password: process.env.POSTGRES_PASSWORD,
-        database: process.env.POSTGRES_DB,
+        server_username: process.env.FLEX_SERVER_USER,
+        server_host: process.env.POSTGRES_SERVER_HOST,
+        server_password: process.env.FLEX_SERVER_PASSWORD,
+        flex_database: process.env.FLEX_DB,
+        tdei_database: process.env.TDEI_DB,
         ssl: Boolean(process.env.SSL),
-        port: parseInt(process.env.POSTGRES_PORT ?? "5432"),
+        server_port: parseInt(process.env.POSTGRES_SERVER_PORT ?? "5432"),
     },
     appPort: parseInt(process.env.APPLICATION_PORT ?? "8080"),
     authPermissionUrl: process.env.AUTH_PERMISSION_URL

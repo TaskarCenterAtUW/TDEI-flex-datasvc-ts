@@ -3,24 +3,24 @@ import { PostgresError } from '../constants/pg-error-constants';
 import { environment } from '../environment/environment';
 import UniqueKeyDbException, { ForeignKeyDbException } from '../exceptions/db/database-exceptions';
 
-class DataSource {
+class TdeiDataSource {
     private pool: Pool;
 
     constructor() {
-        console.info("Initializing database !");
+        console.info("Initializing TDEI database !");
         this.pool = new Pool({
-            database: environment.database.database,
-            host: environment.database.host,
-            user: environment.database.username,
-            password: environment.database.password,
+            database: environment.database.tdei_database,
+            host: environment.database.server_host,
+            user: environment.database.server_username,
+            password: environment.database.server_password,
             ssl: environment.database.ssl,
-            port: environment.database.port
+            port: environment.database.server_port
         });
 
         this.pool.on('error', function (err: Error, _client: any) {
-            console.log(`Idle-Client Error:\n${err.message}\n${err.stack}`)
+            console.log(`TDEI : Idle-Client Error:\n${err.message}\n${err.stack}`)
         }).on('connect', () => {
-            console.log("Database initialized successfully !");
+            console.log("TDEI Database initialized successfully !");
         });
 
     }
@@ -32,7 +32,7 @@ class DataSource {
      * @returns 
      */
     async query(queryTextOrConfig: string | QueryConfig<any[]>, params: any[] = []): Promise<QueryResult<any>> {
-        const client = await this.pool.connect()
+        const client = await this.pool.connect();
         try {
             if (queryTextOrConfig instanceof String) {
                 const result = await client.query(queryTextOrConfig, params);
@@ -71,5 +71,5 @@ class DataSource {
     }
 }
 
-const dbClient = new DataSource();
-export default dbClient;
+const tdeiDbClient = new TdeiDataSource();
+export default tdeiDbClient;

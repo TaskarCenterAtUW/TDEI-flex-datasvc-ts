@@ -70,13 +70,13 @@ class EventBusService implements IEventBusServiceInterface {
                                 success: false,
                                 message: 'Error occured while processing flex request' + error
                             });
-                        this.publish(messageReceived,
-                            {
-                                success: true,
-                                message: 'OSW request processed successfully !'
-                            });
-                        return Promise.resolve();
-                    });;
+                    });
+                    this.publish(messageReceived,
+                        {
+                            success: true,
+                            message: 'Flex request processed successfully !'
+                        });
+                    return Promise.resolve();
                 }
             });
         } catch (error) {
