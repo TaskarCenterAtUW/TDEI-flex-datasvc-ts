@@ -63,20 +63,22 @@ class EventBusService implements IEventBusServiceInterface {
                     console.error('Upload flex file metadata information failed validation. errors: ', errors);
                     throw Error(message);
                 } else {
-                    gtfsFlexService.createAGtfsFlex(flexVersions).catch((error: any) => {
+                    gtfsFlexService.createAGtfsFlex(flexVersions).then((res) => {
+                        console.info(`Flex record created successfully !`);
+                        this.publish(messageReceived,
+                            {
+                                success: true,
+                                message: 'Flex request processed successfully !'
+                            });
+                        return Promise.resolve();
+                    }).catch((error: any) => {
                         console.error('Error saving the flex version', error);
                         this.publish(messageReceived,
                             {
                                 success: false,
                                 message: 'Error occured while processing flex request' + error
                             });
-                        this.publish(messageReceived,
-                            {
-                                success: true,
-                                message: 'OSW request processed successfully !'
-                            });
-                        return Promise.resolve();
-                    });;
+                    });
                 }
             });
         } catch (error) {
