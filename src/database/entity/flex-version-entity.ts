@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
+import { FeatureCollection } from 'geojson';
 import { Prop } from 'nodets-ms-core/lib/models';
 import { QueryConfig } from 'pg';
 import { BaseDto } from '../../model/base-dto';
-import { Polygon, PolygonDto } from '../../model/polygon-model';
 import { IsValidPolygon } from '../../validators/polygon-validator';
 
 export class FlexVersions extends BaseDto {
@@ -10,45 +10,45 @@ export class FlexVersions extends BaseDto {
     id!: number;
     @Prop()
     @IsNotEmpty()
-    tdei_record_id: string = "";
+    tdei_record_id!: string;
     confidence_level: number = 0;
     @Prop()
     @IsNotEmpty()
-    tdei_org_id: string = "";
+    tdei_org_id!: string;
     @Prop()
     @IsNotEmpty()
-    tdei_service_id: string = "";
+    tdei_service_id!: string;
     @Prop()
     @IsNotEmpty()
-    file_upload_path: string = "";
+    file_upload_path!: string;
     @Prop()
     @IsNotEmpty()
-    uploaded_by: string = "";
+    uploaded_by!: string;
     @Prop()
     @IsNotEmpty()
-    collected_by: string = "";
+    collected_by!: string;
     @Prop()
     @IsNotEmpty()
-    collection_date: Date = new Date();
+    collection_date!: Date;
     @Prop()
     @IsNotEmpty()
-    collection_method: string = "";
+    collection_method!: string;
     @Prop()
     @IsNotEmpty()
-    valid_from: Date = new Date();
+    valid_from!: Date;
     @Prop()
     @IsNotEmpty()
     valid_to: Date = new Date();
     @Prop()
     @IsNotEmpty()
-    data_source: string = "";
+    data_source!: string;
     @Prop()
     @IsNotEmpty()
-    flex_schema_version: string = "";
+    flex_schema_version!: string;
     @IsOptional()
     @IsValidPolygon()
     @Prop()
-    polygon!: PolygonDto;
+    polygon!: FeatureCollection;
 
     constructor(init?: Partial<FlexVersions>) {
         super();
@@ -77,7 +77,7 @@ export class FlexVersions extends BaseDto {
                 , this.collected_by, this.collection_date, this.collection_method, this.valid_from, this.valid_to, this.data_source, this.flex_schema_version],
         }
         if (polygonExists) {
-            queryObject.values.push(JSON.stringify(new Polygon({ coordinates: this.polygon.coordinates })));
+            queryObject.values.push(JSON.stringify(this.polygon.features[0].geometry));
         }
         return queryObject;
     }

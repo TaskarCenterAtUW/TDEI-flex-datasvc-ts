@@ -6,7 +6,6 @@ import { AzureQueueConfig } from "nodets-ms-core/lib/core/queue/providers/azure-
 import { environment } from "../environment/environment";
 import { Core } from "nodets-ms-core";
 import { QueueMessageContent } from "../model/queue-message-model";
-import { Polygon } from "../model/polygon-model";
 import { Topic } from "nodets-ms-core/lib/core/queue/topic";
 import { QueueMessage } from "nodets-ms-core/lib/core/queue";
 import { randomUUID } from "crypto";
@@ -52,8 +51,6 @@ class EventBusService implements IEventBusServiceInterface {
             flexVersions.tdei_record_id = queueMessage.tdeiRecordId;
             flexVersions.uploaded_by = queueMessage.userId;
             flexVersions.file_upload_path = queueMessage.meta.file_upload_path;
-            //This line will instantiate the polygon class and set defult class values
-            flexVersions.polygon = new Polygon({ coordinates: flexVersions.polygon.coordinates });
             console.info(`Received message: ${messageReceived.data}`);
 
             validate(flexVersions).then(errors => {

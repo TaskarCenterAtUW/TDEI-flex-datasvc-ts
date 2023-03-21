@@ -1,7 +1,7 @@
 import { IsOptional } from "class-validator";
+import { FeatureCollection } from "geojson";
 import { AbstractDomainEntity, Prop } from "nodets-ms-core/lib/models";
 import { IsValidPolygon } from "../validators/polygon-validator";
-import { Polygon } from "./polygon-model";
 
 export class GtfsFlexUploadModel extends AbstractDomainEntity {
     @Prop()
@@ -30,6 +30,6 @@ export class GtfsFlexUploadModel extends AbstractDomainEntity {
     flex_schema_version!: string;
     @IsOptional()
     @IsValidPolygon()
-    polygon!: Polygon;
+    polygon!: FeatureCollection;
 }
 

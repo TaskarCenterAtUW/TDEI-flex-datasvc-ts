@@ -1,3 +1,4 @@
+import { Geometry, Feature } from "geojson";
 import fetch from "node-fetch";
 import { Core } from "nodets-ms-core";
 import { FileEntity } from "nodets-ms-core/lib/core/storage";
@@ -10,7 +11,6 @@ import HttpException from "../exceptions/http/http-base-exception";
 import { DuplicateException } from "../exceptions/http/http-exceptions";
 import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
 import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
-import { PolygonDto } from "../model/polygon-model";
 import { ServiceDto } from "../model/service-dto";
 import { Utility } from "../utility/utility";
 import { IGtfsFlexService } from "./interface/gtfs-flex-service-interface";
@@ -38,8 +38,19 @@ class GtfsFlexService implements IGtfsFlexService {
         result.rows.forEach(x => {
 
             let flex = GtfsFlexDTO.from(x);
-            if (flex.polygon)
-                flex.polygon = new PolygonDto({ coordinates: JSON.parse(x.polygon2).coordinates });
+            if (flex.polygon) {
+                var polygon = JSON.parse(x.polygon2) as Geometry;
+                flex.polygon = {
+                    type: "FeatureCollection",
+                    features: [
+                        {
+                            type: "Feature",
+                            geometry: polygon,
+                            properties: {}
+                        } as Feature
+                    ]
+                }
+            }
             list.push(flex);
         })
         return Promise.resolve(list);
@@ -67,7 +78,7 @@ class GtfsFlexService implements IGtfsFlexService {
 
     /**
     * Creates new GTFS Flex in the TDEI system.
-    * @param pathwayInfo GTFS Flex object 
+    * @param flexInfo GTFS Flex object 
     */
     async createAGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
         try {
