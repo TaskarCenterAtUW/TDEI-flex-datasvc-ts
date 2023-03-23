@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsOptional } from "class-validator";
+import { FeatureCollection } from "geojson";
 import { Prop } from "nodets-ms-core/lib/models";
 import { IsValidPolygon } from "../validators/polygon-validator";
 import { BaseDto } from "./base-dto";
-import { PolygonDto } from "./polygon-model";
 
 export class ServiceDto extends BaseDto {
     @Prop()
@@ -16,7 +16,7 @@ export class ServiceDto extends BaseDto {
     @IsOptional()
     @IsValidPolygon()
     @Prop()
-    polygon!: PolygonDto;
+    polygon!: FeatureCollection;
 
     constructor(init?: Partial<ServiceDto>) {
         super();
