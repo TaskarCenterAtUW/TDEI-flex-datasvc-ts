@@ -5,7 +5,7 @@ import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
 import { FileEntity } from "nodets-ms-core/lib/core/storage";
 import gtfsFlexService from "../service/gtfs-flex-service";
 import HttpException from "../exceptions/http/http-base-exception";
-import { DuplicateException } from "../exceptions/http/http-exceptions";
+import { DuplicateException, InputException } from "../exceptions/http/http-exceptions";
 import { FlexVersions } from "../database/entity/flex-version-entity";
 import { validate, ValidationError } from "class-validator";
 
@@ -29,7 +29,12 @@ class GtfsFlexController implements IController {
             response.send(gtfsFlex);
         } catch (error) {
             console.error("Error while fetching the flex information", error);
-            next(new HttpException(500, "Error while fetching the flex information"));
+            if (error instanceof InputException) {
+                next(error);
+            }
+            else {
+                next(new HttpException(500, "Error while fetching the pathways information"));
+            }
         }
     }
 
