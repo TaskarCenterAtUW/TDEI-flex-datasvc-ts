@@ -89,7 +89,14 @@ class GtfsFlexService implements IGtfsFlexService {
 
             //Validate service_id 
             let service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_org_id);
-            if (!service) throw new Error("Service id not found or inactive.");
+            if (!service) {
+                throw new Error("Service id not found or inactive.");
+            }
+            else {
+                console.log("service object received");
+                console.log(service);
+            }
+            
 
             await flexDbClient.query(flexInfo.getInsertQuery());
 
@@ -116,6 +123,9 @@ class GtfsFlexService implements IGtfsFlexService {
             });
 
             const data: [] = await result.json();
+            console.log('From service ID');
+            console.log("Service ID passed = = "+serviceId);
+            console.log(data);
 
             if (result.status != undefined && result.status != 200)
                 throw new Error(await result.json());
