@@ -5,14 +5,14 @@ import { IsValidPolygon } from "../validators/polygon-validator";
 import { BaseDto } from "./base-dto";
 
 export class ServiceDto extends BaseDto {
-    @Prop()
-    service_id: string = "0";
+    @Prop("tdei_service_id")
+    tdei_service_id: string = "0";
     @IsNotEmpty()
     @Prop()
-    owner_org!: string;
+    tdei_org_id!: string;
     @IsNotEmpty()
-    @Prop()
-    name!: string;
+    @Prop("service_name")
+    service_name!: string;
     @IsOptional()
     @IsValidPolygon()
     @Prop()
