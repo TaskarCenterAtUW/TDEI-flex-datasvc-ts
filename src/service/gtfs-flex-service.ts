@@ -94,7 +94,7 @@ class GtfsFlexService implements IGtfsFlexService {
             }
             else {
                 console.log("service object received");
-                console.log(service);
+                console.log(service.tdei_service_id);
             }
             
 
@@ -123,9 +123,6 @@ class GtfsFlexService implements IGtfsFlexService {
             });
 
             const data: [] = await result.json();
-            console.log('From service ID');
-            console.log("Service ID passed = = "+serviceId);
-            console.log(data);
 
             if (result.status != undefined && result.status != 200)
                 throw new Error(await result.json());
