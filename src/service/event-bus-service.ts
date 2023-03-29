@@ -77,16 +77,18 @@ class EventBusService implements IEventBusServiceInterface {
                                 success: false,
                                 message: 'Error occured while processing flex request' + error
                             });
+                        return Promise.resolve();
                     });
                 }
-            }).catch((error)=>{
+            }).catch((error) => {
                 // Throw metadata validation errors
                 console.log('Failed to validate the flex versions');
                 this.publish(messageReceived,
                     {
-                        success:false,
-                        message: 'Error with metadata'+error
-                    })
+                        success: false,
+                        message: 'Error with metadata' + error
+                    });
+                return Promise.resolve();
             });
 
         } catch (error) {
