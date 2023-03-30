@@ -8,7 +8,7 @@ import flexDbClient from "../database/flex-data-source";
 import { environment } from "../environment/environment";
 import UniqueKeyDbException from "../exceptions/db/database-exceptions";
 import HttpException from "../exceptions/http/http-base-exception";
-import { DuplicateException } from "../exceptions/http/http-exceptions";
+import { DuplicateException, OverlapException } from "../exceptions/http/http-exceptions";
 import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
 import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
 import { ServiceDto } from "../model/service-dto";
@@ -94,7 +94,12 @@ class GtfsFlexService implements IGtfsFlexService {
                 console.log(service.tdei_service_id);
             }
 
-
+            // Check if there is a record with the same date
+            const queryResult =  await flexDbClient.query(flexInfo.getOverlapQuery());
+            if(queryResult.rowCount > 0) {
+                const recordId = queryResult.rows[0]["tdei_record_id"];
+                throw new OverlapException(recordId);
+            }
             await flexDbClient.query(flexInfo.getInsertQuery());
 
             let flex = GtfsFlexDTO.from(flexInfo);

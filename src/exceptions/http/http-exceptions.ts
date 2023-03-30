@@ -6,6 +6,12 @@ export class DuplicateException extends HttpException {
     }
 }
 
+export class OverlapException extends HttpException {
+    constructor(name:string){
+        super(400,`Given record overlaps with tdeirecord ${name} in the system.`);
+    }
+}
+
 export class UnAuthenticated extends HttpException {
     constructor() {
         super(401, `User not authenticated/authorized to perform this action.`);
