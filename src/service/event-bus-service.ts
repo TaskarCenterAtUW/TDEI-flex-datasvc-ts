@@ -46,6 +46,8 @@ class EventBusService implements IEventBusServiceInterface {
                 console.error(queueMessage.tdeiRecordId, errorMessage);
                 throw Error(errorMessage);
             }
+            console.log("Queue message");
+            console.log(queueMessage.request);
 
             var flexVersions: FlexVersions = FlexVersions.from(queueMessage.request);
             flexVersions.tdei_record_id = queueMessage.tdeiRecordId;
@@ -75,9 +77,20 @@ class EventBusService implements IEventBusServiceInterface {
                                 success: false,
                                 message: 'Error occured while processing flex request' + error
                             });
+                        return Promise.resolve();
                     });
                 }
+            }).catch((error) => {
+                // Throw metadata validation errors
+                console.log('Failed to validate the flex versions');
+                this.publish(messageReceived,
+                    {
+                        success: false,
+                        message: 'Error with metadata' + error
+                    });
+                return Promise.resolve();
             });
+
         } catch (error) {
             console.error(tdeiRecordId, 'Error occured while processing flex request', error);
             this.publish(messageReceived,
@@ -120,6 +133,7 @@ class EventBusService implements IEventBusServiceInterface {
         //Set response
         queueMessageContent.response.success = response.success;
         queueMessageContent.response.message = response.message;
+        // Dont publish during development
         this.publishingTopic.publish(QueueMessage.from(
             {
                 messageType: 'flex-data-service',
