@@ -38,9 +38,6 @@ class GtfsFlexService implements IGtfsFlexService {
         result.rows.forEach(x => {
 
             let flex = GtfsFlexDTO.from(x);
-            flex.valid_from = x.valid_from_str;
-            flex.valid_to = x.valid_to_str;
-            flex.collection_date = x.collection_date_str;
             if (flex.polygon) {
                 var polygon = JSON.parse(x.polygon2) as Geometry;
                 flex.polygon = {
@@ -96,7 +93,7 @@ class GtfsFlexService implements IGtfsFlexService {
                 console.log("service object received");
                 console.log(service.tdei_service_id);
             }
-            
+
             // Check if there is a record with the same date
             const queryResult =  await flexDbClient.query(flexInfo.getOverlapQuery());
             if(queryResult.rowCount > 0) {
