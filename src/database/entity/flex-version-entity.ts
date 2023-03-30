@@ -96,16 +96,15 @@ export class FlexVersions extends BaseDto {
      *  input_valid_from >= record_valid_from && input_valid_to 
      */
     getOverlapQuery(): QueryConfig {
-
         const fromDate = new Date(this.valid_from);
         const toDate = new Date(this.valid_to);
-
+        
         const queryObject = {
-            text: `SELECT tdei_record_id from public.flex_versions where 
+            text:`SELECT tdei_record_id from public.flex_versions where 
             tdei_org_id = $1 
             AND tdei_service_id = $2 
             AND (valid_from,valid_to) OVERLAPS ($3 , $4)`,
-            values: [this.tdei_org_id, this.tdei_service_id, fromDate, toDate]
+            values:[this.tdei_org_id,this.tdei_service_id,fromDate, toDate]
         };
         return queryObject;
     }
