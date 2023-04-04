@@ -60,7 +60,12 @@ class EventBusService implements IEventBusServiceInterface {
                 if (errors.length > 0) {
                     const message = errors.map((error: ValidationError) => Object.values(<any>error.constraints)).join(', ');
                     console.error('Upload flex file metadata information failed validation. errors: ', errors);
-                    throw Error(message);
+                    this.publish(messageReceived,
+                        {
+                            success: false,
+                            message: 'Upload flex file metadata information failed validation. errors:' + message
+                        });
+                    return Promise.resolve();
                 } else {
                     gtfsFlexService.createAGtfsFlex(flexVersions).then((res) => {
                         console.info(`Flex record created successfully !`);
