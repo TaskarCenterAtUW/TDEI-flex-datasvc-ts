@@ -32,16 +32,13 @@ Follow the steps to install the node packages required for both building and run
 ### Environment variables
 |Name| Description |
 |--|--|
-| PROVIDER | Provider for cloud service or local |
+| PROVIDER | Provider for cloud service or local (optional) |
 |QUEUECONNECTION | Queue connection string |
 |STORAGECONNECTION | Storage connection string|
-|APPLICATION_PORT |Port on which application will run|
+|PORT |Port on which application will run|
 |VALIDATION_SUBSCRIPTION | Upload topic subscription name|
 |VALIDATION_TOPIC | Validation topic name|
-|EVENT_BUS_CONNECTION | Event bus connection string|
-|AUTH_PERMISSION_URL | Authentication/Authorization url|
-|AUTH_SECRET_TOKEN_GENERATE_URL | Secret token generate url|
-|AUTH_SECRET_TOKEN_VERIFY_URL | Secret token verify url|
+|AUTH_HOST | Base URL for Authentication server |
 |POSTGRES_USER | Database user name|
 |POSTGRES_HOST | Database host url|
 |POSTGRES_PASSWORD | Database user password|
@@ -51,5 +48,6 @@ Follow the steps to install the node packages required for both building and run
 |SERVICE_URL | User management /service url|
 |DATASVC_TOPIC | Data service topic|
 
+An example of this is given in [example env file](./env.example)
 
 
