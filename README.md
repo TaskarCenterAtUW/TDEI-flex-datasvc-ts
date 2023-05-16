@@ -98,4 +98,14 @@ graph LR;
     - Download the GTFS Flex file given the tdei_record_id
 
 
+- Sample GET calls interaction with DB
 
+```mermaid
+sequenceDiagram
+    Client->>+Gateway:GET(flex)
+    Gateway->>+flex-dataservice: GET
+    flex-dataservice->>+flex-database: QUERY
+    flex-database->>+flex-dataservice:Result
+    flex-dataservice->>+Gateway:List of Flex
+    Gateway->>+Client: Flex files list
+```
