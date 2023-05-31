@@ -1,5 +1,5 @@
 # Introduction 
-GTFS Flex data service (micro-service) helps the TDEI system to query & persist the information specific to the GTFS flex. 
+GTFS Flex data service (micro-service) helps the TDEI system to persisting & querying the information specific to the GTFS flex. 
 
 ## Getting Started
 
@@ -45,20 +45,21 @@ Step 2: Ensure docker is installed on local system.
 
 Step 3: Run below command which will setup Postgresql database and PgAdmin client console for postgresql database.
 
-```docker compose up from root directory```
+```docker compose up```  from root directory
 
 ## Build and Test
 ---
 
 Follow the steps to install the node packages required for both building and running the application
 
-1. Install the dependencies. Run the following command in terminal on the same directory as `package.json`
+1. Install the dependencies. Run the following command in terminal on the same directory level as `package.json`
     ```shell
     npm install
     ```
 2. To start the server, use the command `npm run start`
 3. The http server by default starts with 3000 port or whatever is declared in `process.env.PORT` (look at `index.ts` for more details)
-4. Health check available at path `health/ping` with get and post. Make `get` or `post` request to `http://localhost:3000/health/ping`
+4. Health check available at path `health/ping` with get and post. Make `get` or `post` request to `http://localhost:3000/health/ping`.
+Ping should respond with "healthy!" message with HTTP 200 status code.
 
 ## Database schema
 ---
@@ -72,30 +73,32 @@ Diagram describes the Data service system flow
 
 ```mermaid
 graph LR;
-    A[gtfs-flex-validation] -->|subscribes| B(Data Service) -->|publishes| C(gtfs-flex-data)
-    B -->|Save| D(GTFS Flex Database)
+    B(Data Service) -->|subscribes| A[gtfs-flex-validation]
+    B -->|publishes| C(gtfs-flex-data)
+    B -->|Save| D(GTFS Flex database)
     B -->|Auth| E(Auth Service)
-    B -->|Details| F(User Management Service)
+    B -->|Details| I(User Management Service)
     G(Gateway) -->|GET| B(Data Service)
+    H(Client) -->|GET| G
 ```
 
-- `Data service`, subscribes to `gtfs-flex-validation` topic to listen to validation results of the gtfs-flex file upload request.
+- `Client`, makes HTTP GET calls to `Gateway`
+    - Retrive the list of GTFS Flex files with/without search criteria.
+    - Download the GTFS Flex file given the tdei_record_id
 
-- `Data service`, authorizes the request via `Auth Service` 
+- `Data Service`, subscribes to `gtfs-flex-validation` topic to listen to validation results of the gtfs-flex file upload request.
 
-- `Data service`, gets the TDEI entity details from `User Management Service` 
+- `Data Service`, authorizes the every incoming request against the `Auth Service` 
 
-- If validation result is failed , Data service publishes the information to `gtfs-flex-data` topic to update request status complete without persisting the information.
+- `Data Service`, gets the TDEI entity details from `User Management Service` 
 
-- If validation result is successful , Data service first persists the information to the `GTFS Flex database` and publishes the information to `gtfs-flex-data` topic to update request status complete.
+- If validation is failed , Data Service publishes the information to `gtfs-flex-data` topic to update request status complete without persisting the information.
+
+- If validation is successful , Data Service first persists the information to the `GTFS Flex database` and publishes the information to `gtfs-flex-data` topic to update request status complete.
 
 - `gtfs-flex-validation` topic message schema can be found [here](https://github.com/TaskarCenterAtUW/TDEI-event-messages/blob/dev/schema/gtfs-flex-validation-schema.json)
 
 - `gtfs-flex-data` topic message schema can be found [here](https://github.com/TaskarCenterAtUW/TDEI-event-messages/blob/dev/schema/gtfs-flex-validation-schema.json)
-
-- `Gateway Service`, makes HTTP GET calls to 
-    - Retrive the list of GTFS Flex files with/without search criteria.
-    - Download the GTFS Flex file given the tdei_record_id
 
 
 - Sample GET calls interaction with DB
