@@ -2,6 +2,7 @@ import { FileEntity } from "nodets-ms-core/lib/core/storage";
 import { FlexVersions } from "../../database/entity/flex-version-entity";
 import { GtfsFlexDTO } from "../../model/gtfs-flex-dto";
 import { FlexQueryParams } from "../../model/gtfs-flex-get-query-params";
+import { ServiceDto } from "../../model/service-dto";
 
 export interface IGtfsFlexService {
     /**
@@ -18,5 +19,13 @@ export interface IGtfsFlexService {
     * Creates new GTFS Flex in the TDEI system.
     * @param pathwayInfo GTFS Flex object 
     */
-    createAGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO>;
+    createGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO>;
+
+    /**
+     * Gets the service details for given orgid and serviceid
+     * @param serviceId service id uniquely represented by TDEI system
+     * @param orgId oraganization id uniquely represented by TDEI system
+     * @returns 
+     */
+    getServiceById(serviceId: string, orgId: string): Promise<ServiceDto>;
 }
