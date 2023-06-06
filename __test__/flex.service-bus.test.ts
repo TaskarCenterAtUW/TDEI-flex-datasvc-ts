@@ -7,142 +7,145 @@ import { Topic } from "nodets-ms-core/lib/core/queue/topic";
 import eventBusService from "../src/service/event-bus-service";
 
 // group test using describe
-describe("Event Service Bus Test", () => {
-    describe("Queue message", () => {
-        test("When valid message received, expect to process the message successfully", async () => {
-            let messagedProcessed: boolean = false;
-            //Arrange
-            mockQueueMessageContent(true);
+describe("Queue message service", () => {
+    describe("Process Queue message", () => {
 
-            var mockTopic: Topic = getMockTopic();
-            mockTopic.publish = (message: QueueMessage): Promise<void> => {
-                messagedProcessed = message.data.response.success;
-                //Assert
-                expect(messagedProcessed).toBeTruthy();
-                return Promise.resolve();
-            }
-            mockCore();
-            //Mock the topic
-            eventBusService.publishingTopic = mockTopic;
+        describe("Functional", () => {
+            test("When valid message received, Expect to process the message successfully", async () => {
+                let messagedProcessed: boolean = false;
+                //Arrange
+                mockQueueMessageContent(true);
 
-            var dummyResponse = <GtfsFlexDTO>{
-                tdei_record_id: "test_record_id"
-            };
-            const createGtfsFlexSpy = jest
-                .spyOn(flexService, "createGtfsFlex")
-                .mockResolvedValueOnce(dummyResponse);
+                var mockTopic: Topic = getMockTopic();
+                mockTopic.publish = (message: QueueMessage): Promise<void> => {
+                    messagedProcessed = message.data.response.success;
+                    //Assert
+                    expect(messagedProcessed).toBeTruthy();
+                    return Promise.resolve();
+                }
+                mockCore();
+                //Mock the topic
+                eventBusService.publishingTopic = mockTopic;
 
-            //Act
-            await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
-        });
+                var dummyResponse = <GtfsFlexDTO>{
+                    tdei_record_id: "test_record_id"
+                };
+                const createGtfsFlexSpy = jest
+                    .spyOn(flexService, "createGtfsFlex")
+                    .mockResolvedValueOnce(dummyResponse);
 
-        test("When message with empty tdei_record_id received, expect to fail the message processing", async () => {
-            let messagedProcessed: boolean = false;
-            //Arrange
-            mockQueueMessageContent(true);
+                //Act
+                await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
+            });
 
-            var mockTopic: Topic = getMockTopic();
-            mockTopic.publish = (message: QueueMessage): Promise<void> => {
-                messagedProcessed = message.data.response.success;
-                //Assert
-                expect(messagedProcessed).toBeFalsy();
-                return Promise.resolve();
-            }
-            mockCore();
-            //Mock the topic
-            eventBusService.publishingTopic = mockTopic;
+            test("When message with empty tdei_record_id received, Expect to fail the message processing", async () => {
+                let messagedProcessed: boolean = false;
+                //Arrange
+                mockQueueMessageContent(true);
 
-            var dummyResponse = <GtfsFlexDTO>{
-                tdei_record_id: "test_record_id"
-            };
-            const createGtfsFlexSpy = jest
-                .spyOn(flexService, "createGtfsFlex")
-                .mockResolvedValueOnce(dummyResponse);
+                var mockTopic: Topic = getMockTopic();
+                mockTopic.publish = (message: QueueMessage): Promise<void> => {
+                    messagedProcessed = message.data.response.success;
+                    //Assert
+                    expect(messagedProcessed).toBeFalsy();
+                    return Promise.resolve();
+                }
+                mockCore();
+                //Mock the topic
+                eventBusService.publishingTopic = mockTopic;
 
-            var message = TdeiObjectFaker.getGtfsFlexQueueMessageSuccess();
-            message.data.tdei_record_id = "";
-            //Act
-            await eventBusService['processUpload'](message);
-        });
+                var dummyResponse = <GtfsFlexDTO>{
+                    tdei_record_id: "test_record_id"
+                };
+                const createGtfsFlexSpy = jest
+                    .spyOn(flexService, "createGtfsFlex")
+                    .mockResolvedValueOnce(dummyResponse);
 
-        test("When validation failed, expect to fail the message processing", async () => {
-            //Arrange
-            mockQueueMessageContent(true);
+                var message = TdeiObjectFaker.getGtfsFlexQueueMessageSuccess();
+                message.data.tdei_record_id = "";
+                //Act
+                await eventBusService['processUpload'](message);
+            });
 
-            var mockTopic: Topic = getMockTopic();
-            mockTopic.publish = (message: QueueMessage): Promise<void> => {
-                //Assert
-                expect(true).not.toBeCalled();
-                return Promise.resolve();
-            }
-            mockCore();
-            //Mock the topic
-            eventBusService.publishingTopic = mockTopic;
+            test("When validation service failed, Expect to fail the message processing", async () => {
+                //Arrange
+                mockQueueMessageContent(true);
 
-            var dummyResponse = <GtfsFlexDTO>{
-                tdei_record_id: "test_record_id"
-            };
-            const createGtfsFlexSpy = jest
-                .spyOn(flexService, "createGtfsFlex")
-                .mockResolvedValueOnce(dummyResponse);
+                var mockTopic: Topic = getMockTopic();
+                mockTopic.publish = (message: QueueMessage): Promise<void> => {
+                    //Assert
+                    expect(true).not.toBeCalled();
+                    return Promise.resolve();
+                }
+                mockCore();
+                //Mock the topic
+                eventBusService.publishingTopic = mockTopic;
 
-            var message = TdeiObjectFaker.getGtfsFlexQueueMessageSuccess();
-            message.data.response.success = false;
-            message.data.meta.isValid = false;
-            //Act
-            await eventBusService['processUpload'](message);
-        });
+                var dummyResponse = <GtfsFlexDTO>{
+                    tdei_record_id: "test_record_id"
+                };
+                const createGtfsFlexSpy = jest
+                    .spyOn(flexService, "createGtfsFlex")
+                    .mockResolvedValueOnce(dummyResponse);
 
-        test("When create flex database failed, expect to fail the message processing", async () => {
-            let messagedProcessed: boolean = false;
-            //Arrange
-            mockQueueMessageContent(true);
+                var message = TdeiObjectFaker.getGtfsFlexQueueMessageSuccess();
+                message.data.response.success = false;
+                message.data.meta.isValid = false;
+                //Act
+                await eventBusService['processUpload'](message);
+            });
 
-            var mockTopic: Topic = getMockTopic();
-            mockTopic.publish = (message: QueueMessage): Promise<void> => {
-                messagedProcessed = message.data.response.success;
-                //Assert
-                expect(messagedProcessed).toBeFalsy();
-                return Promise.resolve();
-            }
-            mockCore();
-            //Mock the topic
-            eventBusService.publishingTopic = mockTopic;
+            test("When create flex database failed, Expect to fail the message processing", async () => {
+                let messagedProcessed: boolean = false;
+                //Arrange
+                mockQueueMessageContent(true);
 
-            const createGtfsFlexSpy = jest
-                .spyOn(flexService, "createGtfsFlex")
-                .mockRejectedValueOnce(new Error("Database exception"));
+                var mockTopic: Topic = getMockTopic();
+                mockTopic.publish = (message: QueueMessage): Promise<void> => {
+                    messagedProcessed = message.data.response.success;
+                    //Assert
+                    expect(messagedProcessed).toBeFalsy();
+                    return Promise.resolve();
+                }
+                mockCore();
+                //Mock the topic
+                eventBusService.publishingTopic = mockTopic;
 
-            //Act
-            await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
-        });
+                const createGtfsFlexSpy = jest
+                    .spyOn(flexService, "createGtfsFlex")
+                    .mockRejectedValueOnce(new Error("Database exception"));
 
-        test("When permission denied, expect to fail the message processing", async () => {
-            let messagedProcessed: boolean = false;
-            //Arrange
-            mockQueueMessageContent(false);
+                //Act
+                await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
+            });
 
-            var mockTopic: Topic = getMockTopic();
-            mockTopic.publish = (message: QueueMessage): Promise<void> => {
-                messagedProcessed = message.data.response.success;
-                //Assert
-                expect(messagedProcessed).toBeFalsy();
-                return Promise.resolve();
-            };
+            test("When permission denied, Expect to fail the message processing", async () => {
+                let messagedProcessed: boolean = false;
+                //Arrange
+                mockQueueMessageContent(false);
 
-            mockCore();
-            //Mock the topic
-            eventBusService.publishingTopic = mockTopic;
+                var mockTopic: Topic = getMockTopic();
+                mockTopic.publish = (message: QueueMessage): Promise<void> => {
+                    messagedProcessed = message.data.response.success;
+                    //Assert
+                    expect(messagedProcessed).toBeFalsy();
+                    return Promise.resolve();
+                };
 
-            var dummyResponse = <GtfsFlexDTO>{
-                tdei_record_id: "test_record_id"
-            };
-            const createGtfsFlexSpy = jest
-                .spyOn(flexService, "createGtfsFlex")
-                .mockResolvedValueOnce(dummyResponse);
+                mockCore();
+                //Mock the topic
+                eventBusService.publishingTopic = mockTopic;
 
-            //Act
-            await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
+                var dummyResponse = <GtfsFlexDTO>{
+                    tdei_record_id: "test_record_id"
+                };
+                const createGtfsFlexSpy = jest
+                    .spyOn(flexService, "createGtfsFlex")
+                    .mockResolvedValueOnce(dummyResponse);
+
+                //Act
+                await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
+            });
         });
     });
 });
