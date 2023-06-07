@@ -7,7 +7,7 @@ module.exports = {
   coverageProvider: "v8",
   moduleFileExtensions: ["js", "jsx", "ts", "tsx", "json", "node"],
   // roots: ["<rootDir>"],
-  testMatch: ["**/__test__/*.ts"],
+  testMatch: ["**/test/*.ts"],
   transform: {
     "^.+\\.(ts|tsx|js)$": "ts-jest",
   },

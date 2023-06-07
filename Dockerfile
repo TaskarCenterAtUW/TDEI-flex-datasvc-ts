@@ -12,4 +12,4 @@ RUN npm run build
 
 EXPOSE 8080
 
-CMD [ "node", "./build/src/server.js" ]
+CMD [ "node", "./build/server.js" ]
