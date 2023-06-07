@@ -4,9 +4,12 @@ import { environment } from '../environment/environment';
 import UniqueKeyDbException, { ForeignKeyDbException } from '../exceptions/db/database-exceptions';
 
 class FlexDataSource {
-    private pool: Pool;
+    private pool: Pool = new Pool;
 
     constructor() {
+    }
+
+    public initializaDatabase() {
         console.info("Initializing Flex database !");
         this.pool = new Pool({
             database: environment.database.flex_database,
@@ -18,11 +21,10 @@ class FlexDataSource {
         });
 
         this.pool.on('error', function (err: Error, _client: any) {
-            console.log(`Flex : Idle-Client Error:\n${err.message}\n${err.stack}`)
+            console.log(`Flex : Idle-Client Error:\n${err.message}\n${err.stack}`);
         }).on('connect', () => {
             console.log("Flex Database initialized successfully !");
         });
-
     }
 
     /**
@@ -58,16 +60,6 @@ class FlexDataSource {
         } finally {
             client.release();
         }
-    }
-
-    /**
-     * Create a client using one of the pooled connections
-     *
-     * @return client
-     */
-    private async connect(): Promise<PoolClient> {
-        const client = await this.pool.connect();
-        return client;
     }
 }
 

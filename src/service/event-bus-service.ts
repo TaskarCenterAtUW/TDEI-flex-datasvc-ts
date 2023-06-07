@@ -12,7 +12,7 @@ import { randomUUID } from "crypto";
 
 class EventBusService implements IEventBusServiceInterface {
     private queueConfig: AzureQueueConfig;
-    publishingTopic: Topic;
+    public publishingTopic: Topic;
 
     constructor() {
         Core.initialize();
@@ -33,7 +33,6 @@ class EventBusService implements IEventBusServiceInterface {
             tdeiRecordId = queueMessage.tdeiRecordId!;
 
             console.log("Received message for : ", queueMessage.tdeiRecordId, "Message received for flex processing !");
-
 
             if (!queueMessage.response.success) {
                 let errorMessage = "Received failed workflow request";
@@ -67,7 +66,7 @@ class EventBusService implements IEventBusServiceInterface {
                         });
                     return Promise.resolve();
                 } else {
-                    gtfsFlexService.createAGtfsFlex(flexVersions).then((res) => {
+                    gtfsFlexService.createGtfsFlex(flexVersions).then((res) => {
                         console.info(`Flex record created successfully !`);
                         this.publish(messageReceived,
                             {
@@ -153,5 +152,5 @@ class EventBusService implements IEventBusServiceInterface {
 }
 
 
-const eventBusService: IEventBusServiceInterface = new EventBusService();
+const eventBusService = new EventBusService();
 export default eventBusService;

@@ -7,6 +7,7 @@ import { Core } from "nodets-ms-core";
 import eventBusService from "./service/event-bus-service";
 import { unhandledExceptionAndRejectionHandler } from "./middleware/unhandled-exception-rejection-handler";
 import { errorHandler } from "./middleware/error-handler-middleware";
+import flexDbClient from "./database/flex-data-source";
 
 class App {
     public app: express.Application;
@@ -22,6 +23,7 @@ class App {
         this.initializeControllers(controllers);
         this.subscribeUpload();
         this.initializeLibraries();
+        flexDbClient.initializaDatabase();
 
         //Last middleware to be registered: error handler. 
         this.app.use(errorHandler);

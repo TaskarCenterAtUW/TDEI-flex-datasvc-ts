@@ -71,7 +71,7 @@ class GtfsFlexService implements IGtfsFlexService {
         if (result.rows.length == 0) throw new HttpException(404, "Record not found");
 
         const storageClient = Core.getStorageClient();
-        if (storageClient == null) throw console.error("Storage not configured");
+        if (storageClient == null) throw new Error("Storage not configured");
         let url: string = decodeURIComponent(result.rows[0].file_upload_path);
         return storageClient.getFileFromUrl(url);
     }
@@ -80,7 +80,7 @@ class GtfsFlexService implements IGtfsFlexService {
     * Creates new GTFS Flex in the TDEI system.
     * @param flexInfo GTFS Flex object 
     */
-    async createAGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
+    async createGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
         try {
             flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path!);
 
@@ -95,8 +95,8 @@ class GtfsFlexService implements IGtfsFlexService {
             }
 
             // Check if there is a record with the same date
-            const queryResult =  await flexDbClient.query(flexInfo.getOverlapQuery());
-            if(queryResult.rowCount > 0) {
+            const queryResult = await flexDbClient.query(flexInfo.getOverlapQuery());
+            if (queryResult.rowCount > 0) {
                 const recordId = queryResult.rows[0]["tdei_record_id"];
                 throw new OverlapException(recordId);
             }
@@ -116,7 +116,13 @@ class GtfsFlexService implements IGtfsFlexService {
 
     }
 
-    private async getServiceById(serviceId: string, orgId: string): Promise<ServiceDto> {
+    /**
+     * Gets the service details for given orgid and serviceid
+     * @param serviceId service id uniquely represented by TDEI system
+     * @param orgId oraganization id uniquely represented by TDEI system
+     * @returns 
+     */
+    async getServiceById(serviceId: string, orgId: string): Promise<ServiceDto> {
         try {
             let secretToken = await Utility.generateSecret();
             const result = await fetch(`${environment.serviceUrl}?tdei_service_id=${serviceId}&tdei_org_id=${orgId}&page_no=1&page_size=1`, {
