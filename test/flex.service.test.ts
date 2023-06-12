@@ -19,7 +19,7 @@ describe("Flex Service Test", () => {
         describe("Functional", () => {
             test("When requested with empty search filters, Expect to return flex list", async () => {
                 //Arrange
-                var flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
+                const flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
                 const dummyResponse = <QueryResult<any>>{
                     rows: [
                         flexObj
@@ -28,7 +28,7 @@ describe("Flex Service Test", () => {
                 const getAllGtfsFlexSpy = jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
-                var params: FlexQueryParams = new FlexQueryParams();
+                const params: FlexQueryParams = new FlexQueryParams();
                 //Act
                 var result = await flexService.getAllGtfsFlex(params);
                 //Assert
@@ -38,7 +38,7 @@ describe("Flex Service Test", () => {
 
             test("When requested with all search filters, Expect to return flex list", async () => {
                 //Arrange
-                var flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
+                const flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
                 const dummyResponse = <QueryResult<any>>{
                     rows: [
                         flexObj
@@ -47,7 +47,7 @@ describe("Flex Service Test", () => {
                 const getAllGtfsFlexSpy = jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
-                var params: FlexQueryParams = new FlexQueryParams();
+                const params: FlexQueryParams = new FlexQueryParams();
                 params.page_no = 1;
                 params.page_size = 10;
                 params.date_time = "03-03-2023";
@@ -57,7 +57,7 @@ describe("Flex Service Test", () => {
                 params.flex_schema_version = "v2.0";
                 params.bbox = [1, 2, 3, 4]
                 //Act
-                var result = await flexService.getAllGtfsFlex(params);
+                const result = await flexService.getAllGtfsFlex(params);
                 //Assert
                 expect(Array.isArray(result));
                 expect(result.every(item => item instanceof GtfsFlexDTO));
@@ -65,7 +65,7 @@ describe("Flex Service Test", () => {
 
             test("When requested with invalid date search filter, Expect to throw InputException", async () => {
                 //Arrange
-                var flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
+                const flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
                 const dummyResponse = <QueryResult<any>>{
                     rows: [
                         flexObj
@@ -74,7 +74,7 @@ describe("Flex Service Test", () => {
                 const getAllGtfsFlexSpy = jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
-                var params: FlexQueryParams = new FlexQueryParams();
+                const params: FlexQueryParams = new FlexQueryParams();
                 params.page_no = 1;
                 params.page_size = 10;
                 params.date_time = "13-13-2023";
@@ -90,7 +90,7 @@ describe("Flex Service Test", () => {
 
             test("When requested with invalid bbox search filter, Expect to throw InputException", async () => {
                 //Arrange
-                var flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
+                const flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
                 const dummyResponse = <QueryResult<any>>{
                     rows: [
                         flexObj
@@ -99,7 +99,7 @@ describe("Flex Service Test", () => {
                 const getAllGtfsFlexSpy = jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
-                var params: FlexQueryParams = new FlexQueryParams();
+                const params: FlexQueryParams = new FlexQueryParams();
                 params.page_no = 1;
                 params.page_size = 10;
                 params.date_time = "03-03-2023";
@@ -119,7 +119,7 @@ describe("Flex Service Test", () => {
         describe("Functional", () => {
             test("When requested for get Flex version by tdei_record_id, Expect to return FileEntity object", async () => {
                 //Arrange
-                var flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
+                const flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
                 const dummyResponse = <QueryResult<any>>{
                     rows: [
                         {
@@ -133,14 +133,13 @@ describe("Flex Service Test", () => {
                     .mockResolvedValueOnce(dummyResponse);
 
                 //Act
-                var result = await flexService.getGtfsFlexById("tdei_record_id");
+                const result = await flexService.getGtfsFlexById("tdei_record_id");
                 //Assert
                 expect(result instanceof FileEntity);
             });
 
             test("When requested for get Flex version with invalid tdei_record_id, Expect to throw HttpException", async () => {
                 //Arrange
-                var flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
                 const dummyResponse = <QueryResult<any>><unknown>{
                     rows: [],
                     rowCount: 0
@@ -157,7 +156,6 @@ describe("Flex Service Test", () => {
 
             test("When Core failed obtaing storage client, Expect to throw error", async () => {
                 //Arrange
-                var flexObj = TdeiObjectFaker.getGtfsFlexVersionFromDB();
                 const dummyResponse = <QueryResult<any>><unknown>{
                     rows: [
                         {
@@ -184,7 +182,7 @@ describe("Flex Service Test", () => {
         describe("Functional", () => {
             test("When requested for creating Flex version with valid input, Expect to return GtfsFlexDTO object", async () => {
                 //Arrange
-                var flexObj = FlexVersions.from(TdeiObjectFaker.getGtfsFlexVersion());
+                const flexObj = FlexVersions.from(TdeiObjectFaker.getGtfsFlexVersion());
 
                 const insertFlexResponse = <QueryResult<any>>{
                     rows: [
@@ -210,7 +208,7 @@ describe("Flex Service Test", () => {
 
             test("When database exception with duplicate tdei_org_id occured while processing request, Expect to throw DuplicateException", async () => {
                 //Arrange
-                var flexObj = FlexVersions.from(TdeiObjectFaker.getGtfsFlexVersion());
+                const flexObj = FlexVersions.from(TdeiObjectFaker.getGtfsFlexVersion());
 
                 const overlapResponse = <QueryResult<any>>{
                     rowCount: 0

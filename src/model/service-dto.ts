@@ -6,7 +6,7 @@ import { BaseDto } from "./base-dto";
 
 export class ServiceDto extends BaseDto {
     @Prop("tdei_service_id")
-    tdei_service_id: string = "0";
+    tdei_service_id = "0";
     @IsNotEmpty()
     @Prop()
     tdei_org_id!: string;

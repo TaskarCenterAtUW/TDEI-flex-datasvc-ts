@@ -26,29 +26,29 @@ class EventBusService implements IEventBusServiceInterface {
      * @param messageReceived Mesage from queue
      */
     private processUpload = async (messageReceived: any) => {
-        var tdeiRecordId = "";
+        let tdeiRecordId = "";
         try {
-            var queueMessage = QueueMessageContent.from(messageReceived.data);
+            let queueMessage = QueueMessageContent.from(messageReceived.data);
 
             tdeiRecordId = queueMessage.tdeiRecordId!;
 
             console.log("Received message for : ", queueMessage.tdeiRecordId, "Message received for flex processing !");
 
             if (!queueMessage.response.success) {
-                let errorMessage = "Received failed workflow request";
+                const errorMessage = "Received failed workflow request";
                 console.error(queueMessage.tdeiRecordId, errorMessage, messageReceived);
                 return Promise.resolve();
             }
 
             if (!await queueMessage.hasPermission(["tdei-admin", "poc", "flex_data_generator"])) {
-                let errorMessage = "Unauthorized request !";
+                const errorMessage = "Unauthorized request !";
                 console.error(queueMessage.tdeiRecordId, errorMessage);
                 throw Error(errorMessage);
             }
             console.log("Queue message");
             console.log(queueMessage.request);
 
-            var flexVersions: FlexVersions = FlexVersions.from(queueMessage.request);
+            let flexVersions: FlexVersions = FlexVersions.from(queueMessage.request);
             flexVersions.tdei_record_id = queueMessage.tdeiRecordId;
             flexVersions.uploaded_by = queueMessage.userId;
             flexVersions.file_upload_path = queueMessage.meta.file_upload_path;
@@ -66,7 +66,7 @@ class EventBusService implements IEventBusServiceInterface {
                         });
                     return Promise.resolve();
                 } else {
-                    gtfsFlexService.createGtfsFlex(flexVersions).then((res) => {
+                    gtfsFlexService.createGtfsFlex(flexVersions).then(() => {
                         console.info(`Flex record created successfully !`);
                         this.publish(messageReceived,
                             {
@@ -131,7 +131,7 @@ class EventBusService implements IEventBusServiceInterface {
         success: boolean,
         message: string
     }) {
-        var queueMessageContent: QueueMessageContent = QueueMessageContent.from(queueMessage.data);
+        let queueMessageContent: QueueMessageContent = QueueMessageContent.from(queueMessage.data);
         //Set validation stage
         queueMessageContent.stage = 'flex-data-service';
         //Set response

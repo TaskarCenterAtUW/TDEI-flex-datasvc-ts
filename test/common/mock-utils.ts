@@ -7,13 +7,13 @@ import { QueueMessageContent } from "../../src/model/queue-message-model";
 import { Utility } from "../../src/utility/utility";
 
 export function getMockFileEntity() {
-    var fileEntity: FileEntity = {
+    const fileEntity: FileEntity = {
         fileName: "test_file_name",
         mimeType: "csv",
         filePath: "test_file_path",
         getStream: function (): Promise<NodeJS.ReadableStream> {
-            var mockedStream = new Readable();
-            mockedStream._read = function (size) { /* do nothing */ };
+            const mockedStream = new Readable();
+            mockedStream._read = function () { /* do nothing */ };
             return Promise.resolve(mockedStream);
         },
         getBodyText: function (): Promise<string> {
@@ -27,7 +27,7 @@ export function getMockFileEntity() {
 }
 
 export function getMockStorageClient() {
-    var storageClientObj: StorageClient = {
+    const storageClientObj: StorageClient = {
         getContainer: function (name: string): Promise<StorageContainer> {
             return Promise.resolve(getMockStorageContainer());
         },
