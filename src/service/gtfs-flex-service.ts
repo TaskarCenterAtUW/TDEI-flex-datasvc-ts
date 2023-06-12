@@ -124,7 +124,7 @@ class GtfsFlexService implements IGtfsFlexService {
      */
     async getServiceById(serviceId: string, orgId: string): Promise<ServiceDto> {
         try {
-            let secretToken = await Utility.generateSecret();
+            const secretToken = await Utility.generateSecret();
             const result = await fetch(`${environment.serviceUrl}?tdei_service_id=${serviceId}&tdei_org_id=${orgId}&page_no=1&page_size=1`, {
                 method: 'get',
                 headers: { 'Content-Type': 'application/json', 'x-secret': secretToken }
