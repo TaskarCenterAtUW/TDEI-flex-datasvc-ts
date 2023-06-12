@@ -28,7 +28,7 @@ class EventBusService implements IEventBusServiceInterface {
     private processUpload = async (messageReceived: any) => {
         let tdeiRecordId = "";
         try {
-            let queueMessage = QueueMessageContent.from(messageReceived.data);
+            const queueMessage = QueueMessageContent.from(messageReceived.data);
 
             tdeiRecordId = queueMessage.tdeiRecordId!;
 
@@ -48,7 +48,7 @@ class EventBusService implements IEventBusServiceInterface {
             console.log("Queue message");
             console.log(queueMessage.request);
 
-            let flexVersions: FlexVersions = FlexVersions.from(queueMessage.request);
+            const flexVersions: FlexVersions = FlexVersions.from(queueMessage.request);
             flexVersions.tdei_record_id = queueMessage.tdeiRecordId;
             flexVersions.uploaded_by = queueMessage.userId;
             flexVersions.file_upload_path = queueMessage.meta.file_upload_path;
@@ -131,7 +131,7 @@ class EventBusService implements IEventBusServiceInterface {
         success: boolean,
         message: string
     }) {
-        let queueMessageContent: QueueMessageContent = QueueMessageContent.from(queueMessage.data);
+        const queueMessageContent: QueueMessageContent = QueueMessageContent.from(queueMessage.data);
         //Set validation stage
         queueMessageContent.stage = 'flex-data-service';
         //Set response

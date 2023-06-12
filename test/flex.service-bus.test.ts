@@ -1,6 +1,4 @@
-import flexService from "../src/service/gtfs-flex-service";
 import { TdeiObjectFaker } from "./common/tdei-object-faker";
-import { GtfsFlexDTO } from "../src/model/gtfs-flex-dto";
 import { getMockTopic, mockCore, mockQueueMessageContent } from "./common/mock-utils";
 import { QueueMessage } from "nodets-ms-core/lib/core/queue";
 import { Topic } from "nodets-ms-core/lib/core/queue/topic";
@@ -26,14 +24,6 @@ describe("Queue message service", () => {
                 mockCore();
                 //Mock the topic
                 eventBusService.publishingTopic = mockTopic;
-
-                const dummyResponse = <GtfsFlexDTO>{
-                    tdei_record_id: "test_record_id"
-                };
-                const createGtfsFlexSpy = jest
-                    .spyOn(flexService, "createGtfsFlex")
-                    .mockResolvedValueOnce(dummyResponse);
-
                 //Act
                 await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
             });
@@ -53,14 +43,6 @@ describe("Queue message service", () => {
                 mockCore();
                 //Mock the topic
                 eventBusService.publishingTopic = mockTopic;
-
-                const dummyResponse = <GtfsFlexDTO>{
-                    tdei_record_id: "test_record_id"
-                };
-                const createGtfsFlexSpy = jest
-                    .spyOn(flexService, "createGtfsFlex")
-                    .mockResolvedValueOnce(dummyResponse);
-
                 const message = TdeiObjectFaker.getGtfsFlexQueueMessageSuccess();
                 message.data.tdei_record_id = "";
                 //Act
@@ -80,14 +62,6 @@ describe("Queue message service", () => {
                 mockCore();
                 //Mock the topic
                 eventBusService.publishingTopic = mockTopic;
-
-                const dummyResponse = <GtfsFlexDTO>{
-                    tdei_record_id: "test_record_id"
-                };
-                const createGtfsFlexSpy = jest
-                    .spyOn(flexService, "createGtfsFlex")
-                    .mockResolvedValueOnce(dummyResponse);
-
                 const message = TdeiObjectFaker.getGtfsFlexQueueMessageSuccess();
                 message.data.response.success = false;
                 message.data.meta.isValid = false;
@@ -110,11 +84,6 @@ describe("Queue message service", () => {
                 mockCore();
                 //Mock the topic
                 eventBusService.publishingTopic = mockTopic;
-
-                const createGtfsFlexSpy = jest
-                    .spyOn(flexService, "createGtfsFlex")
-                    .mockRejectedValueOnce(new Error("Database exception"));
-
                 //Act
                 await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
             });
@@ -135,14 +104,6 @@ describe("Queue message service", () => {
                 mockCore();
                 //Mock the topic
                 eventBusService.publishingTopic = mockTopic;
-
-                const dummyResponse = <GtfsFlexDTO>{
-                    tdei_record_id: "test_record_id"
-                };
-                const createGtfsFlexSpy = jest
-                    .spyOn(flexService, "createGtfsFlex")
-                    .mockResolvedValueOnce(dummyResponse);
-
                 //Act
                 await eventBusService['processUpload'](TdeiObjectFaker.getGtfsFlexQueueMessageSuccess());
             });

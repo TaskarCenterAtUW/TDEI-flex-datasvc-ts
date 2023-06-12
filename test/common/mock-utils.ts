@@ -1,5 +1,4 @@
 import { Core } from "nodets-ms-core"
-import { QueueMessage } from "nodets-ms-core/lib/core/queue";
 import { Topic } from "nodets-ms-core/lib/core/queue/topic";
 import { FileEntity, StorageClient, StorageContainer } from "nodets-ms-core/lib/core/storage"
 import { Readable } from "stream"
@@ -19,7 +18,7 @@ export function getMockFileEntity() {
         getBodyText: function (): Promise<string> {
             return Promise.resolve("Sample body test");
         },
-        upload: function (body: NodeJS.ReadableStream): Promise<FileEntity> {
+        upload: function (): Promise<FileEntity> {
             return Promise.resolve(this);
         }
     };
@@ -28,13 +27,13 @@ export function getMockFileEntity() {
 
 export function getMockStorageClient() {
     const storageClientObj: StorageClient = {
-        getContainer: function (name: string): Promise<StorageContainer> {
+        getContainer: function (): Promise<StorageContainer> {
             return Promise.resolve(getMockStorageContainer());
         },
-        getFile: function (containerName: string, fileName: string): Promise<FileEntity> {
+        getFile: function (): Promise<FileEntity> {
             return Promise.resolve(getMockFileEntity());
         },
-        getFileFromUrl: function (fullUrl: string): Promise<FileEntity> {
+        getFileFromUrl: function (): Promise<FileEntity> {
             return Promise.resolve(getMockFileEntity());
         }
     };
@@ -42,12 +41,12 @@ export function getMockStorageClient() {
 }
 
 export function getMockStorageContainer() {
-    var storageContainerObj: StorageContainer = {
+    const storageContainerObj: StorageContainer = {
         name: "test_container",
         listFiles: function (): Promise<FileEntity[]> {
             return Promise.resolve([getMockFileEntity()]);
         },
-        createFile: function (name: string, mimeType: string): FileEntity {
+        createFile: function (): FileEntity {
             return getMockFileEntity();
         }
     };
@@ -55,8 +54,8 @@ export function getMockStorageContainer() {
 }
 
 export function getMockTopic() {
-    var mockTopic: Topic = new Topic({ provider: "Azure" }, "test");
-    mockTopic.publish = (messaage: QueueMessage): Promise<void> => {
+    const mockTopic: Topic = new Topic({ provider: "Azure" }, "test");
+    mockTopic.publish = (): Promise<void> => {
         return Promise.resolve();
     }
 
@@ -69,16 +68,16 @@ export function mockCore() {
     jest.spyOn(Core, "getTopic").mockImplementation(() => { return getMockTopic(); });
 }
 
-export function mockQueueMessageContent(permissionResolve: boolean = true) {
+export function mockQueueMessageContent(permissionResolve = true) {
     jest.spyOn(QueueMessageContent, "from")
         .mockImplementation((json: any) => {
-            var test: QueueMessageContent = new QueueMessageContent();
+            let test: QueueMessageContent = new QueueMessageContent();
             test = structuredClone(json);
             //This is due to not able to mock Prop() behaviour 
             test.tdeiRecordId = json.tdei_record_id;
             test.userId = json.user_id;
             test.orgId = json.tdei_org_id;
-            test.hasPermission = jest.fn().mockImplementation((roles: []) => {
+            test.hasPermission = jest.fn().mockImplementation(() => {
                 return Promise.resolve(permissionResolve);
             });
             return test;

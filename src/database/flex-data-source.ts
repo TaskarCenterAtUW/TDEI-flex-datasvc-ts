@@ -20,7 +20,7 @@ class FlexDataSource {
             port: environment.database.server_port
         });
 
-        this.pool.on('error', function (err: Error, _client: any) {
+        this.pool.on('error', function (err: Error) {
             console.log(`Flex : Idle-Client Error:\n${err.message}\n${err.stack}`);
         }).on('connect', () => {
             console.log("Flex Database initialized successfully !");
