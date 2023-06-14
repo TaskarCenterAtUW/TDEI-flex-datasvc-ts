@@ -24,7 +24,7 @@ class GtfsFlexController implements IController {
 
     getAllGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
         try {
-            var params: FlexQueryParams = new FlexQueryParams(JSON.parse(JSON.stringify(request.query)));
+            const params: FlexQueryParams = new FlexQueryParams(JSON.parse(JSON.stringify(request.query)));
             const gtfsFlex = await gtfsFlexService.getAllGtfsFlex(params);
             response.status(200).send(gtfsFlex);
         } catch (error) {
@@ -42,7 +42,7 @@ class GtfsFlexController implements IController {
 
     getGtfsFlexById = async (request: Request, response: express.Response, next: NextFunction) => {
         try {
-            let fileEntity: FileEntity = await gtfsFlexService.getGtfsFlexById(request.params.id);
+            const fileEntity: FileEntity = await gtfsFlexService.getGtfsFlexById(request.params.id);
 
             response.header('Content-Type', fileEntity.mimeType);
             response.header('Content-disposition', `attachment; filename=${fileEntity.fileName}`);
