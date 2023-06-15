@@ -55,12 +55,12 @@ describe("{{Component}}", () => {
 | Controller | Get Flex file by Id | Functional| When requested for valid tdei_record_id | Expect to return downloadable file stream |:white_check_mark:|
 | Controller | Get Flex file by Id | Functional| When requested for invalid tdei_record_id | Expect to return HTTP status 404 |:white_check_mark:|
 | Controller | Get Flex file by Id | Functional| When unexpected error occured while processing request | Expect to return HTTP status 500 |:white_check_mark:|
-| Controller | Create Flex version | Functional| When valid input provided | Expect to return tdei_record_id for new record |:white_check_mark:|
-| Controller | Create Flex version | Functional| When provided null body | Expect to return HTTP status 500 |:white_check_mark:|
-| Controller | Create Flex version | Functional| When provided body with empty tdei_org_id | Expect to return HTTP status 400|:white_check_mark:|
-| Controller | Create Flex version | Functional| When provided body with invalid polygon | Expect to return HTTP status 400|:white_check_mark:|
-| Controller | Create Flex version | Functional| When database exception occured while processing request | Expect to return HTTP status 500|:white_check_mark:|
-| Controller | Create Flex version | Functional| When database exception with duplicate tdei_org_id occured while processing request | Expect to return HTTP status 400|:white_check_mark:|
+| Controller | Create Flex File | Functional| When valid input provided | Expect to return tdei_record_id for new record |:white_check_mark:|
+| Controller | Create Flex File | Functional| When provided null body | Expect to return HTTP status 500 |:white_check_mark:|
+| Controller | Create Flex File | Functional| When provided body with empty tdei_org_id | Expect to return HTTP status 400|:white_check_mark:|
+| Controller | Create Flex File | Functional| When provided body with invalid polygon | Expect to return HTTP status 400|:white_check_mark:|
+| Controller | Create Flex File | Functional| When database exception occured while processing request | Expect to return HTTP status 500|:white_check_mark:|
+| Controller | Create Flex File | Functional| When database exception with duplicate tdei_org_id occured while processing request | Expect to return HTTP status 400|:white_check_mark:|
 |--|--|--|--|--|--|
 | Flex Service | Get all Flex | Functional| When requested with empty search filters | Expect to return Flex list |:white_check_mark:|
 | Flex Service | Get all Flex | Functional| When requested with all search filters| Expect to return Flex list |:white_check_mark:|
@@ -69,9 +69,9 @@ describe("{{Component}}", () => {
 | Flex Service | Get Flex version by Id | Functional| When requested for get Flex version by tdei_record_id| Expect to return FileEntity object |:white_check_mark:|
 | Flex Service | Get Flex version by Id | Functional| When requested for get Flex version with invalid tdei_record_id| Expect to throw HttpException |:white_check_mark:|
 | Flex Service | Get Flex version by Id | Functional| When Core failed obtaing storage client| Expect to throw error |:white_check_mark:|
-| Flex Service | Create Flex version | Functional| When requested for creating Flex version with valid input| Expect to return GtfsFlexDTO object |:white_check_mark:|
-| Flex Service | Create Flex version | Functional| When database exception with duplicate tdei_org_id occured while processing request| Expect to throw DuplicateException |:white_check_mark:|
-| Flex Service | Create Flex version | Functional| When database exception occured while processing request| Expect to throw error |:white_check_mark:|
+| Flex Service | Create Flex File | Functional| When requested for creating Flex file with valid input| Expect to return GtfsFlexDTO object |:white_check_mark:|
+| Flex Service | Create Flex File | Functional| When database exception with duplicate tdei_org_id occured while processing request| Expect to throw DuplicateException |:white_check_mark:|
+| Flex Service | Create Flex File | Functional| When database exception occured while processing request| Expect to throw error |:white_check_mark:|
 | Flex Service | Get Station Id | Functional| When requested| Expect to return service details |:white_check_mark:|
 | Flex Service | Get Station Id | Functional| When external service get call fails unexpected| Expect to throw error |:white_check_mark:|
 | Flex Service | Get Station Id | Functional| When requested invalid station id| Expect to throw error |:white_check_mark:|
