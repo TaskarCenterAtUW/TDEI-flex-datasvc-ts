@@ -1,4 +1,4 @@
-import { Pool, PoolClient, QueryConfig, QueryResult } from 'pg';
+import { Pool, QueryConfig, QueryResult } from 'pg';
 import { PostgresError } from '../constants/pg-error-constants';
 import { environment } from '../environment/environment';
 import UniqueKeyDbException, { ForeignKeyDbException } from '../exceptions/db/database-exceptions';
