@@ -61,6 +61,11 @@ class GtfsFlexController implements IController {
 
     createGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
         try {
+            if (!request.body) {
+                response.status(400).send('Input validation failed with below reasons : empty body passed');
+                return next(new HttpException(400, 'Input validation failed with below reasons : empty body passed'));
+            }
+
             let flex = FlexVersions.from(request.body);
 
             return validate(flex).then(async errors => {
