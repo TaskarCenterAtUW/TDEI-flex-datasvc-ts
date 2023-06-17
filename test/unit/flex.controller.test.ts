@@ -14,7 +14,7 @@ describe("Flex Controller Test", () => {
         describe("Functional", () => {
             test("When requested with empty search criteria, Expect to return flex list", async () => {
                 //Arrange
-                let req = getMockReq();
+                const req = getMockReq();
                 const { res, next } = getMockRes();
                 const list: GtfsFlexDTO[] = [<GtfsFlexDTO>{}]
                 const getAllGtfsFlexSpy = jest
@@ -30,7 +30,7 @@ describe("Flex Controller Test", () => {
 
             test("When requested with bad collection_date input, Expect to return HTTP status 400", async () => {
                 //Arrange
-                let req = getMockReq({ body: { collection_date: "2023" } });
+                const req = getMockReq({ body: { collection_date: "2023" } });
                 const { res, next } = getMockRes();
                 const getAllGtfsFlexSpy = jest
                     .spyOn(gtfsFlexService, "getAllGtfsFlex")
@@ -45,7 +45,7 @@ describe("Flex Controller Test", () => {
 
             test("When unknown or database exception occured while processing request, Expect to return HTTP status 500", async () => {
                 //Arrange
-                let req = getMockReq({ body: { collection_date: "2023" } });
+                const req = getMockReq({ body: { collection_date: "2023" } });
                 const { res, next } = getMockRes();
                 const getAllGtfsFlexSpy = jest
                     .spyOn(gtfsFlexService, "getAllGtfsFlex")
@@ -63,7 +63,7 @@ describe("Flex Controller Test", () => {
         describe("Functional", () => {
             test("When requested for valid tdei_record_id, Expect to return downloadable file stream", async () => {
                 //Arrange
-                let req = getMockReq();
+                const req = getMockReq();
                 const { res, next } = getMockRes();
 
                 const getGtfsFlexByIdSpy = jest
@@ -78,7 +78,7 @@ describe("Flex Controller Test", () => {
 
             test("When requested for invalid tdei_record_id, Expect to return HTTP status 404", async () => {
                 //Arrange
-                let req = getMockReq();
+                const req = getMockReq();
                 const { res, next } = getMockRes();
 
                 const getGtfsFlexByIdSpy = jest
@@ -94,7 +94,7 @@ describe("Flex Controller Test", () => {
 
             test("When unexpected error occured while processing request, Expect to return HTTP status 500", async () => {
                 //Arrange
-                let req = getMockReq();
+                const req = getMockReq();
                 const { res, next } = getMockRes();
 
                 const getGtfsFlexByIdSpy = jest
@@ -115,9 +115,9 @@ describe("Flex Controller Test", () => {
         describe("Functional", () => {
             test("When valid input provided, Expect to return tdei_record_id for new record", async () => {
                 //Arrange
-                let req = getMockReq({ body: TdeiObjectFaker.getGtfsFlexVersion() });
+                const req = getMockReq({ body: TdeiObjectFaker.getGtfsFlexVersion() });
                 const { res, next } = getMockRes();
-                var dummyResponse = <GtfsFlexDTO>{
+                const dummyResponse = <GtfsFlexDTO>{
                     tdei_record_id: "test_record_id"
                 };
                 const createGtfsFlexSpy = jest
@@ -133,8 +133,14 @@ describe("Flex Controller Test", () => {
 
             test("When provided null body, Expect to return HTTP status 400", async () => {
                 //Arrange
-                let req = getMockReq({ body: null });
+                const req = getMockReq({ body: null });
                 const { res, next } = getMockRes();
+                const dummyResponse = <GtfsFlexDTO>{
+                    tdei_record_id: "test_record_id"
+                };
+                const createGtfsFlexSpy = jest
+                    .spyOn(gtfsFlexService, "createGtfsFlex")
+                    .mockResolvedValueOnce(dummyResponse);
                 //Act
                 await gtfsFlexController.createGtfsFlex(req, res, next);
                 //Assert
@@ -144,10 +150,16 @@ describe("Flex Controller Test", () => {
 
             test("When provided body with empty tdei_org_id, Expect to return HTTP status 400", async () => {
                 //Arrange
-                let flexObject = TdeiObjectFaker.getGtfsFlexVersion();
+                const flexObject = TdeiObjectFaker.getGtfsFlexVersion();
                 flexObject.tdei_org_id = "";
-                let req = getMockReq({ body: flexObject });
+                const req = getMockReq({ body: flexObject });
                 const { res, next } = getMockRes();
+                const dummyResponse = <GtfsFlexDTO>{
+                    tdei_record_id: "test_record_id"
+                };
+                const createGtfsFlexSpy = jest
+                    .spyOn(gtfsFlexService, "createGtfsFlex")
+                    .mockRejectedValueOnce(dummyResponse);
                 //Act
                 await gtfsFlexController.createGtfsFlex(req, res, next);
                 //Assert
@@ -157,9 +169,9 @@ describe("Flex Controller Test", () => {
 
             test("When provided body with invalid polygon, Expect to return HTTP status 400", async () => {
                 //Arrange
-                let flexObject = TdeiObjectFaker.getGtfsFlexVersion();
+                const flexObject = TdeiObjectFaker.getGtfsFlexVersion();
                 flexObject.polygon = TdeiObjectFaker.getInvalidPolygon();
-                let req = getMockReq({ body: flexObject });
+                const req = getMockReq({ body: flexObject });
                 const { res, next } = getMockRes();
                 //Act
                 await gtfsFlexController.createGtfsFlex(req, res, next);
@@ -170,8 +182,8 @@ describe("Flex Controller Test", () => {
 
             test("When database exception occured while processing request, Expect to return HTTP status 500", async () => {
                 //Arrange
-                let flexObject = TdeiObjectFaker.getGtfsFlexVersion();
-                let req = getMockReq({ body: flexObject });
+                const flexObject = TdeiObjectFaker.getGtfsFlexVersion();
+                const req = getMockReq({ body: flexObject });
                 const { res, next } = getMockRes();
 
                 const createGtfsFlexSpy = jest
@@ -186,8 +198,8 @@ describe("Flex Controller Test", () => {
 
             test("When database exception with duplicate tdei_org_id occured while processing request, Expect to return HTTP status 400", async () => {
                 //Arrange
-                let flexObject = TdeiObjectFaker.getGtfsFlexVersion();
-                let req = getMockReq({ body: flexObject });
+                const flexObject = TdeiObjectFaker.getGtfsFlexVersion();
+                const req = getMockReq({ body: flexObject });
                 const { res, next } = getMockRes();
 
                 const createGtfsFlexSpy = jest
