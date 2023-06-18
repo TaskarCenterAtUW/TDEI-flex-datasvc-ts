@@ -85,7 +85,7 @@ export class TdeiObjectFaker {
             type: "Polygon",
             coordinates: [this.getCoordinates()]
         };
-    };
+    }
 
     private static getCoordinates(): number[][] {
         const randomCoordinates: number[][] = [];
