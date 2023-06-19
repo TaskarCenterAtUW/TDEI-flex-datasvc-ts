@@ -31,7 +31,10 @@ export class EventBusService implements IEventBusServiceInterface {
         try {
             const queueMessage = QueueMessageContent.from(messageReceived.data);
 
-            tdeiRecordId = queueMessage.tdeiRecordId!;
+            if (queueMessage.tdeiRecordId !== null && queueMessage.tdeiRecordId !== undefined) {
+                tdeiRecordId = queueMessage.tdeiRecordId;
+            }
+            
 
             console.log("Received message for : ", queueMessage.tdeiRecordId, "Message received for flex processing !");
 

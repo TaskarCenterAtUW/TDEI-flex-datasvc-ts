@@ -80,8 +80,11 @@ class GtfsFlexService implements IGtfsFlexService {
     */
     async createGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
         try {
-            flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path!);
-
+            
+            if (flexInfo.file_upload_path !== undefined && flexInfo.file_upload_path !== null) {
+                flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path);
+            }
+            
             //Validate service_id 
             const service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_org_id);
             if (!service) {
