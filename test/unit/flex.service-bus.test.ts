@@ -32,7 +32,7 @@ describe("Queue message service", () => {
                 const dummyResponse = <GtfsFlexDTO>{
                     tdei_record_id: "test_record_id"
                 };
-                const createGtfsFlexSpy = jest
+                jest
                     .spyOn(flexService, "createGtfsFlex")
                     .mockResolvedValueOnce(dummyResponse);
 
@@ -59,7 +59,7 @@ describe("Queue message service", () => {
                 const dummyResponse = <GtfsFlexDTO>{
                     tdei_record_id: "test_record_id"
                 };
-                const createGtfsFlexSpy = jest
+                jest
                     .spyOn(flexService, "createGtfsFlex")
                     .mockResolvedValueOnce(dummyResponse);
 
@@ -86,7 +86,7 @@ describe("Queue message service", () => {
                 const dummyResponse = <GtfsFlexDTO>{
                     tdei_record_id: "test_record_id"
                 };
-                const createGtfsFlexSpy = jest
+                jest
                     .spyOn(flexService, "createGtfsFlex")
                     .mockResolvedValueOnce(dummyResponse);
 
@@ -113,7 +113,7 @@ describe("Queue message service", () => {
                 //Mock the topic
                 eventBusService.publishingTopic = mockTopic;
 
-                const createGtfsFlexSpy = jest
+                jest
                     .spyOn(flexService, "createGtfsFlex")
                     .mockRejectedValueOnce(new Error("Database exception"));
 
@@ -141,7 +141,7 @@ describe("Queue message service", () => {
                 const dummyResponse = <GtfsFlexDTO>{
                     tdei_record_id: "test_record_id"
                 };
-                const createGtfsFlexSpy = jest
+                    jest
                     .spyOn(flexService, "createGtfsFlex")
                     .mockResolvedValueOnce(dummyResponse);
 
