@@ -32,7 +32,7 @@ describe("Flex Controller Test", () => {
                 //Arrange
                 const req = getMockReq({ body: { collection_date: "2023" } });
                 const { res, next } = getMockRes();
-                const getAllGtfsFlexSpy = jest
+                jest
                     .spyOn(gtfsFlexService, "getAllGtfsFlex")
                     .mockRejectedValueOnce(new InputException("Invalid date provided."));
                 //Act
@@ -47,7 +47,7 @@ describe("Flex Controller Test", () => {
                 //Arrange
                 const req = getMockReq({ body: { collection_date: "2023" } });
                 const { res, next } = getMockRes();
-                const getAllGtfsFlexSpy = jest
+                jest
                     .spyOn(gtfsFlexService, "getAllGtfsFlex")
                     .mockRejectedValueOnce(new Error("unknown error"));
                 //Act
@@ -81,7 +81,7 @@ describe("Flex Controller Test", () => {
                 const req = getMockReq();
                 const { res, next } = getMockRes();
 
-                const getGtfsFlexByIdSpy = jest
+                jest
                     .spyOn(gtfsFlexService, "getGtfsFlexById")
                     .mockRejectedValueOnce(new HttpException(404, "Record not found"));
                 //Act
@@ -97,7 +97,7 @@ describe("Flex Controller Test", () => {
                 const req = getMockReq();
                 const { res, next } = getMockRes();
 
-                const getGtfsFlexByIdSpy = jest
+                jest
                     .spyOn(gtfsFlexService, "getGtfsFlexById")
                     .mockRejectedValueOnce(new Error("Unexpected error"));
                 //Act
@@ -138,7 +138,7 @@ describe("Flex Controller Test", () => {
                 const dummyResponse = <GtfsFlexDTO>{
                     tdei_record_id: "test_record_id"
                 };
-                const createGtfsFlexSpy = jest
+                jest
                     .spyOn(gtfsFlexService, "createGtfsFlex")
                     .mockResolvedValueOnce(dummyResponse);
                 //Act
@@ -157,7 +157,7 @@ describe("Flex Controller Test", () => {
                 const dummyResponse = <GtfsFlexDTO>{
                     tdei_record_id: "test_record_id"
                 };
-                const createGtfsFlexSpy = jest
+                jest
                     .spyOn(gtfsFlexService, "createGtfsFlex")
                     .mockRejectedValueOnce(dummyResponse);
                 //Act

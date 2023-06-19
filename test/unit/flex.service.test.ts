@@ -25,7 +25,7 @@ describe("Flex Service Test", () => {
                         flexObj
                     ]
                 };
-                const getAllGtfsFlexSpy = jest
+                jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
                 const params: FlexQueryParams = new FlexQueryParams();
@@ -44,7 +44,7 @@ describe("Flex Service Test", () => {
                         flexObj
                     ]
                 };
-                const getAllGtfsFlexSpy = jest
+                jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
                 const params: FlexQueryParams = new FlexQueryParams();
@@ -71,7 +71,7 @@ describe("Flex Service Test", () => {
                         flexObj
                     ]
                 };
-                const getAllGtfsFlexSpy = jest
+                    jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
                 const params: FlexQueryParams = new FlexQueryParams();
@@ -96,7 +96,7 @@ describe("Flex Service Test", () => {
                         flexObj
                     ]
                 };
-                const getAllGtfsFlexSpy = jest
+                    jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
                 const params: FlexQueryParams = new FlexQueryParams();
