@@ -56,7 +56,7 @@ describe("{{Component}}", () => {
 | Controller | Get Flex file by Id | Functional| When requested for invalid tdei_record_id | Expect to return HTTP status 404 |:white_check_mark:|
 | Controller | Get Flex file by Id | Functional| When unexpected error occured while processing request | Expect to return HTTP status 500 |:white_check_mark:|
 | Controller | Create Flex File | Functional| When valid input provided | Expect to return tdei_record_id for new record |:white_check_mark:|
-| Controller | Create Flex File | Functional| When provided null body | Expect to return HTTP status 500 |:white_check_mark:|
+| Controller | Create Flex File | Functional| When provided null body | Expect to return HTTP status 400 |:white_check_mark:|
 | Controller | Create Flex File | Functional| When provided body with empty tdei_org_id | Expect to return HTTP status 400|:white_check_mark:|
 | Controller | Create Flex File | Functional| When provided body with invalid polygon | Expect to return HTTP status 400|:white_check_mark:|
 | Controller | Create Flex File | Functional| When database exception occured while processing request | Expect to return HTTP status 500|:white_check_mark:|
