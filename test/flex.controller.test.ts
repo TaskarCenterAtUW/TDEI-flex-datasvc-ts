@@ -40,6 +40,7 @@ describe("Flex Controller Test", () => {
                 //Assert
                 expect(res.status).toHaveBeenCalledWith(400);
                 expect(next).toHaveBeenCalled();
+                expect(getAllGtfsFlexSpy).toHaveBeenCalledTimes(1);
             });
 
             test("When unknown or database exception occured while processing request, Expect to return HTTP status 500", async () => {
@@ -88,6 +89,7 @@ describe("Flex Controller Test", () => {
                 //Assert
                 expect(res.status).toBeCalledWith(404);
                 expect(next).toHaveBeenCalled();
+                expect(getGtfsFlexByIdSpy).toHaveBeenCalledTimes(1);
             });
 
             test("When unexpected error occured while processing request, Expect to return HTTP status 500", async () => {
@@ -103,11 +105,12 @@ describe("Flex Controller Test", () => {
                 //Assert
                 expect(res.status).toBeCalledWith(500);
                 expect(next).toHaveBeenCalled();
+                expect(getGtfsFlexByIdSpy).toHaveBeenCalledTimes(1);
             });
         });
     });
 
-    describe("Create Flex version", () => {
+    describe("Create Flex file", () => {
 
         describe("Functional", () => {
             test("When valid input provided, Expect to return tdei_record_id for new record", async () => {
@@ -128,20 +131,14 @@ describe("Flex Controller Test", () => {
                 expect(res.send).toBeCalledWith(dummyResponse);
             });
 
-            test("When provided null body, Expect to return HTTP status 500", async () => {
+            test("When provided null body, Expect to return HTTP status 400", async () => {
                 //Arrange
                 let req = getMockReq({ body: null });
                 const { res, next } = getMockRes();
-                var dummyResponse = <GtfsFlexDTO>{
-                    tdei_record_id: "test_record_id"
-                };
-                const createGtfsFlexSpy = jest
-                    .spyOn(gtfsFlexService, "createGtfsFlex")
-                    .mockResolvedValueOnce(dummyResponse);
                 //Act
                 await gtfsFlexController.createGtfsFlex(req, res, next);
                 //Assert
-                expect(res.status).toBeCalledWith(500);
+                expect(res.status).toBeCalledWith(400);
                 expect(next).toHaveBeenCalled();
             });
 
@@ -151,12 +148,6 @@ describe("Flex Controller Test", () => {
                 flexObject.tdei_org_id = "";
                 let req = getMockReq({ body: flexObject });
                 const { res, next } = getMockRes();
-                var dummyResponse = <GtfsFlexDTO>{
-                    tdei_record_id: "test_record_id"
-                };
-                const createGtfsFlexSpy = jest
-                    .spyOn(gtfsFlexService, "createGtfsFlex")
-                    .mockRejectedValueOnce(dummyResponse);
                 //Act
                 await gtfsFlexController.createGtfsFlex(req, res, next);
                 //Assert
