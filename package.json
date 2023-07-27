@@ -24,6 +24,7 @@
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.9",
     "@types/pg": "^8.6.6",
+    "@types/multer":"1.4.7",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "eslint": "^8.29.0",
@@ -52,6 +53,7 @@
     "node-fetch": "^2.6.7",
     "nodets-ms-core": "0.0.9",
     "pg": "^8.8.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "multer":"1.4.5-lts.1"
   }
 }
