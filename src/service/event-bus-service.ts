@@ -14,6 +14,7 @@ import { env } from "process";
 export class EventBusService implements IEventBusServiceInterface {
     private queueConfig: AzureQueueConfig;
     public publishingTopic: Topic;
+    
 
     constructor(queueConnection: string = environment.eventBus.connectionString as string, publishingTopicName: string = environment.eventBus.dataServiceTopic as string) {
         Core.initialize();

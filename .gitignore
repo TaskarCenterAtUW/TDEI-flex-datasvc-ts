@@ -169,3 +169,6 @@ tsconfig.nx-tmp
 /node_modules
 package-lock.json
 test-report.html
+
+# uploads directory
+uploads

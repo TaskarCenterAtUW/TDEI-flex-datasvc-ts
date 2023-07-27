@@ -10,6 +10,18 @@ import { FlexVersions } from "../database/entity/flex-version-entity";
 import { validate, ValidationError } from "class-validator";
 import { Version, Versions } from "../model/versions-dto";
 import { environment } from "../environment/environment";
+import multer from "multer";
+import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
+import { GtfsFlexUploadMeta } from "../model/gtfs-flex-upload-meta";
+
+const upload = multer({
+    dest: 'uploads/',
+    // fileFilter: (req, file, cb) => {
+    //     cb(null, false);
+    //     cb(null, true);
+    //     cb(new Error(`I don't have a clue!`));
+    // },
+});
 
 class GtfsFlexController implements IController {
     public path = '/api/v1/gtfs-flex';
@@ -33,6 +45,7 @@ class GtfsFlexController implements IController {
         }]);
 
         response.status(200).send(versionsList);
+        this.router.post(this.path,upload.single('file') ,this.createGtfsFlex);
     }
 
     getAllGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
@@ -74,15 +87,34 @@ class GtfsFlexController implements IController {
             next(new HttpException(500, "Error while getting the file stream"));
         }
     }
-
+    /**
+     * Function to create record in the database and upload the gtfs-files
+     * @param request - request 
+     * @param response - response
+     * @param next 
+     * @returns 
+     */
     createGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
         try {
+            // console.log(request.file)
+            // console.log(request.body)
+            const meta = JSON.parse(request.body['meta']);
+            console.log(meta);
+            const gtfsdto = GtfsFlexUploadMeta.from(meta);
+            console.log(gtfsdto);
+            const result = await validate(gtfsdto);
+            console.log('result', result);
+            console.log(gtfsdto.collection_date);
+            // console.log(meta);
             if (!request.body) {
                 response.status(400).send('Input validation failed with below reasons : empty body passed');
                 return next(new HttpException(400, 'Input validation failed with below reasons : empty body passed'));
             }
+           
 
             let flex = FlexVersions.from(request.body);
+
+            return response.status(200).send('Happy')
 
             return validate(flex).then(async errors => {
                 // errors is an array of validation errors
