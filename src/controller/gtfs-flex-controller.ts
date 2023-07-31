@@ -17,6 +17,7 @@ import storageService from "../service/storage-service";
 import path from "path";
 import { Readable } from "stream";
 import eventBusService from "../service/event-bus-service";
+import { tokenValidator } from "../middleware/token-validation-middleware";
 
 const upload = multer({
     dest: 'uploads/',
@@ -53,6 +54,7 @@ class GtfsFlexController implements IController {
 
         response.status(200).send(versionsList);
         this.router.post(this.path,upload.single('file') ,this.createGtfsFlex);
+        this.router.post(this.path,upload.single('file'),tokenValidator,this.createGtfsFlex);
     }
 
     getAllGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
@@ -106,6 +108,8 @@ class GtfsFlexController implements IController {
             // console.log(request.file)
             // console.log(request.body)
             const meta = JSON.parse(request.body['meta']);
+            const userId = request.body.user_id;
+            
             console.log(meta);
             const gtfsdto = GtfsFlexUploadMeta.from(meta);
             console.log(gtfsdto);
@@ -114,6 +118,7 @@ class GtfsFlexController implements IController {
             console.log(gtfsdto.collection_date);
             const uid = storageService.generateRandomUUID();
             const folderPath = storageService.getFolderPath(gtfsdto.tdei_org_id,uid);
+            // return response.status(200).send('Done '+userId);
             // storageService.uploadFile()
             const uploadedFile = request.file;
             uploadedFile?.originalname
@@ -132,11 +137,11 @@ class GtfsFlexController implements IController {
             let flex = FlexVersions.from(meta);
             flex.tdei_record_id = uid;
             flex.file_upload_path = uploadPath;
-            flex.uploaded_by = gtfsdto.collected_by;//TODO: Get the user.
+            flex.uploaded_by = userId;
             // const returnInfo = await gtfsFlexService.createGtfsFlex(flex); 
             console.log(flex);
             
-            eventBusService.publishUpload(gtfsdto,uid,uploadPath)
+            eventBusService.publishUpload(gtfsdto,uid,uploadPath,userId);
             // Also send the information to the queueu
             
             return response.status(200).send(gtfsdto);
