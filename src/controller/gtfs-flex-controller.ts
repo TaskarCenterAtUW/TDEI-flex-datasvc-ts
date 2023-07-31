@@ -138,7 +138,7 @@ class GtfsFlexController implements IController {
             flex.tdei_record_id = uid;
             flex.file_upload_path = uploadPath;
             flex.uploaded_by = userId;
-            // const returnInfo = await gtfsFlexService.createGtfsFlex(flex); 
+            // const returnInfo = await gtfsFlexService.createGtfsFlex(flex);  // Store in database
             console.log(flex);
             
             eventBusService.publishUpload(gtfsdto,uid,uploadPath,userId);
