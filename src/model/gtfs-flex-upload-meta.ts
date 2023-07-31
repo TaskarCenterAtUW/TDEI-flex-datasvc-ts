@@ -57,4 +57,16 @@ export class GtfsFlexUploadMeta extends AbstractDomainEntity{
     @Prop()
     flex_schema_version!:string;
 
+    @Prop()
+    @IsISO8601()
+    @IsNotEmpty()
+    valid_to!:Date;
+
+    @Prop()
+    @IsISO8601()
+    @IsNotEmpty()
+    valid_from!:Date;
+
+
+
 }
