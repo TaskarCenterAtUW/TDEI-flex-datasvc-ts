@@ -22,6 +22,20 @@ export class TdeiObjectFaker {
         } as FlexVersions;
     }
 
+    static getGtfsFlexPayload(){
+        return {
+            polygon: this.getPolygon(),
+            tdei_org_id: 'tdei-org-id',
+            tdei_service_id:'tdei-service-id',
+            collected_by:'collectedby',
+            collection_method:'manual',
+            data_source:'InHouse',
+            flex_schema_version:'v2.0',
+            valid_from: new Date(),
+            valid_to : new Date()
+        }
+    }
+
     static getGtfsFlexVersionFromDB() {
         return {
             //DB polygon is stored as binary obj
