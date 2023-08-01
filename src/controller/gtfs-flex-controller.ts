@@ -19,13 +19,20 @@ import { Readable } from "stream";
 import eventBusService from "../service/event-bus-service";
 import { tokenValidator } from "../middleware/token-validation-middleware";
 
+/**
+ * Multer for multiple uploads
+ * Configured to pull to `uploads` folder
+ * and buffer is available with the request
+ * File filter is added to ensure only files with .zip extension
+ * are allowed
+ */
 const upload = multer({
     dest: 'uploads/',
     storage: memoryStorage(),
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         if(ext != '.zip') {
-            cb(new Error('Invalid file type uploaded'));
+            cb(new Error('Invalid file type uploaded')); //TODO: Define error type
         }
         cb(null,true);
     },
@@ -105,34 +112,26 @@ class GtfsFlexController implements IController {
      */
     createGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
         try {
-            // console.log(request.file)
-            // console.log(request.body)
             const meta = JSON.parse(request.body['meta']);
             const userId = request.body.user_id;
-            
-            console.log(meta);
+            // console.log(meta);
             const gtfsdto = GtfsFlexUploadMeta.from(meta);
-            console.log(gtfsdto);
+            // console.log(gtfsdto);
             const result = await validate(gtfsdto);
-            console.log('result', result);
-            console.log(gtfsdto.collection_date);
+            // console.log('result', result);
+            // console.log(gtfsdto.collection_date);
             const uid = storageService.generateRandomUUID();
             const folderPath = storageService.getFolderPath(gtfsdto.tdei_org_id,uid);
             // return response.status(200).send('Done '+userId);
-            // storageService.uploadFile()
             const uploadedFile = request.file;
             uploadedFile?.originalname
             const uploadPath = path.join(folderPath,uploadedFile!.originalname)
-            console.log(uploadPath);
-            // console.log(uploadedFile!.buffer);
-            // console.log(uploadedFile);
+            // console.log(uploadPath);
             await storageService.uploadFile(uploadPath,'application/zip',Readable.from(uploadedFile!.buffer))
-            // console.log(meta);
             if (!request.body) {
                 response.status(400).send('Input validation failed with below reasons : empty body passed');
                 return next(new HttpException(400, 'Input validation failed with below reasons : empty body passed'));
             }
-           
 
             let flex = FlexVersions.from(meta);
             flex.tdei_record_id = uid;
@@ -142,37 +141,13 @@ class GtfsFlexController implements IController {
             console.log(flex);
             
             eventBusService.publishUpload(gtfsdto,uid,uploadPath,userId);
-            // Also send the information to the queueu
+            // Also send the information to the queue
             
             return response.status(200).send(gtfsdto);
-
-            // return validate(flex).then(async errors => {
-            //     // errors is an array of validation errors
-            //     if (errors.length > 0) {
-            //         console.error('Upload flex file metadata information failed validation. errors: ', errors);
-            //         const message = errors.map((error: ValidationError) => Object.values(<any>error.constraints)).join(', ');
-            //         response.status(400).send('Input validation failed with below reasons : \n' + message);
-            //         next(new HttpException(400, 'Input validation failed with below reasons : \n' + message));
-            //     } else {
-            //         return await gtfsFlexService.createGtfsFlex(flex)
-            //             .then(newFlex => {
-            //                 return Promise.resolve(response.status(200).send(newFlex));
-            //             })
-            //             .catch((error: any) => {
-            //                 if (error instanceof DuplicateException) {
-            //                     response.status(error.status).send(error.message)
-            //                     next(new HttpException(error.status, error.message));
-            //                 }
-            //                 else {
-            //                     response.status(500).send('Error saving the flex version')
-            //                     next(new HttpException(500, 'Error saving the flex version'));
-            //                 }
-            //             });
-            //     }
-            // });
+            
         } catch (error) {
-            console.error('Error saving the flex version', error);
-            response.status(500).send('Error saving the flex version')
+            console.error('Error saving the flex file', error);
+            response.status(500).send('Error saving the flex file')
             // next(new HttpException(500, "Error saving the flex version"));
         }
     }
