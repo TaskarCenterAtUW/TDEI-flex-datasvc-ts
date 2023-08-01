@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import { Core } from 'nodets-ms-core';
 import { environment } from "../environment/environment";
 import { PermissionRequest } from 'nodets-ms-core/lib/core/auth/model/permission_request';
+import { UnAuthenticated } from '../exceptions/http/http-exceptions';
 
 /**
  * Validates the token and sends the user_id in the req.body
@@ -18,22 +19,23 @@ import { PermissionRequest } from 'nodets-ms-core/lib/core/auth/model/permission
 export async function tokenValidator(req: Request, res: Response, next: NextFunction) {
 
     const approvedRoles = ["tdei_admin", "poc", "flex_data_generator"]; // Change it based on service
-    
+
     // Get the authorization key
     const bearerHeader = req.headers.authorization;
     if (bearerHeader === '' || bearerHeader === undefined) {
-        res.status(401).send('Unauthorized');
+        // res.status(401).send('Unauthorized');
+        next(new UnAuthenticated());
     }
     else {
         // Get the bearer
         const bearer = bearerHeader!.replace(/^Bearer\s/, '');
         if (bearer === '' || bearer === undefined) {
-            res.status(401).send('Unauthorized');
+            next(new UnAuthenticated());
         }
         // Decode the token
         const jwtOutput = jwt.decode(bearer);
         if (jwtOutput == null) {
-            res.send(401).send('Invalid token');
+            next(new UnAuthenticated());
         }
         const user_id = jwtOutput?.sub;
 
@@ -58,11 +60,13 @@ export async function tokenValidator(req: Request, res: Response, next: NextFunc
                 next();
             }
             else {
-                res.send(401).send('Not Authorized');
+                // res.send(401).send('Not Authorized');
+                next(new UnAuthenticated());
             }
         }
         catch (error) {
-            res.send(401).send('Not Authorized');
+            // res.send(401).send('Not Authorized');
+            next(new UnAuthenticated());
         }
 
 

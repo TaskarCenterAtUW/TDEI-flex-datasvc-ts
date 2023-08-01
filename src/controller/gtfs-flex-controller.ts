@@ -5,7 +5,7 @@ import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
 import { FileEntity } from "nodets-ms-core/lib/core/storage";
 import gtfsFlexService from "../service/gtfs-flex-service";
 import HttpException from "../exceptions/http/http-base-exception";
-import { DuplicateException, InputException } from "../exceptions/http/http-exceptions";
+import { DuplicateException, FileTypeException, InputException } from "../exceptions/http/http-exceptions";
 import { FlexVersions } from "../database/entity/flex-version-entity";
 import { validate, ValidationError } from "class-validator";
 import { Version, Versions } from "../model/versions-dto";
@@ -32,7 +32,7 @@ const upload = multer({
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         if(ext != '.zip') {
-            cb(new Error('Invalid file type uploaded')); //TODO: Define error type
+            cb(new FileTypeException());
         }
         cb(null,true);
     },
