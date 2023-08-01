@@ -244,7 +244,7 @@ Uploaded on 23rd August  2023 will be stored in (if the file name is `attrib.zip
 `2023/08/abc/def/attrib.zip`
 
 ### 6&7: Assigning the path and record id and inserting into DB
-An initial DTO (Data object) is created with the meta data along with the uploaded path, userID and the record ID. There is a check made to ensure the serviceId belongs to the organization. After the verification, the data is inserted into the DB.
+An initial DTO (Data object) is created with the meta data along with the uploaded path, userID and the record ID. There is a check made to ensure the serviceId belongs to the organization. After the verification, the data is inserted into the DB. Queuemessage for upload is also scheduled here.
 
 ### 8:Response
 The recordID generated in step 4 is sent back as response to the user.
