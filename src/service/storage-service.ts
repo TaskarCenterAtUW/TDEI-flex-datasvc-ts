@@ -43,7 +43,7 @@ class StorageService {
         // console.log('File name',uploadedEntity?.fileName);
         // const otherEntity = await client?.getFile(containerName,uploadedEntity!.filePath);
         // console.log(otherEntity?.filePath);
-        return uploadedEntity!.filePath; // TODO: Get the remote URL
+        return uploadedEntity!.filePath; // TODO: Get the remote URL (Next version of core)
     }
 }
 
