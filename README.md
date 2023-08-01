@@ -152,3 +152,99 @@ For running integration test, following env variables are required.
 |VALIDATION_TOPIC | Validation topic name|
 |DATASVC_TOPIC | Data service publishing topic|
 |SERVICE_URL | User management /service url|
+## File upload implementation
+
+The file upload implementation is done as per the existing upload API.
+
+Path : `/api/v1/gtfsflex`
+
+Method : `POST`
+
+Form data : Contains two parts
+
+`meta`: Payload in JSON format 
+
+`file`: The zip file for flex
+
+Example for meta 
+
+```json
+{
+    "tdei_org_id": "5e339544-3b12-40a5-8acd-78c66d1fa981",
+    "tdei_service_id": "333",
+    "collected_by": "testuser",
+    "collection_date": "2023-03-02T04:22:42.493Z",
+    "collection_method": "manual",
+    "valid_from": "2023-03-02T04:22:42.493Z",
+    "valid_to": "2023-03-02T04:22:42.493Z",
+    "data_source": "TDEITools",
+    "polygon": {
+      "coordinates": [
+            [
+              [
+                77.58700584031209,
+                12.97544246408998
+              ],
+              [
+                77.58670678771239,
+                12.974635462667848
+              ],
+              [
+                77.58782248394829,
+                12.974489753799247
+              ],
+              [
+                77.58813303857153,
+                12.97529675569426
+              ],
+              [
+                77.58700584031209,
+                12.97544246408998
+              ]]]
+    },
+    "flex_schema_version": "v2.0"
+  }
+```
+## Execution of flow
+
+The flow of processing is as follows
+1. Middleware auth verification
+2. File format verification
+3. Meta validation of upload
+4. Generating random UID (recordID)
+5. Uploading to Storage (with path)
+6. Assigning path, recordID and creating DTO 
+7. Verifying the serviceID against orgID and inserting into the Database
+8. Responding with recordID
+
+### 1. Middleware for auth verification
+- This step verifies the `Bearer` token for userID and also parses the `userId` from the header.
+- The `userID` is inserted into body as `body.userId` for further processing
+- The userId is checked for authentication to upload against the auth URL.
+
+Any error in this is dealt with a 401 Unauthorized error
+
+### 2. File format verification
+This middleware verifies that the uploaded file is in `.zip` extension and reponds with 400 bad request if the file is not a zip file
+
+### 3. Meta validation
+The `meta` body is parsed and is validated according to the initial validation conditions Any error is responded back with 500 error with the message
+
+### 4&5. Generating randomUID and upload
+
+Random UUID is generated which will be assigned as `tdei_record_id`. The uploaded file is transferred to storage with path. The path for storage is
+`yyyy/mm/<tdeiorgid>/<tdeirecordID>`
+
+Eg.
+- tdeiOrgID - abc
+- tdeiRecordId - def
+
+Uploaded on 23rd August  2023 will be stored in (if the file name is `attrib.zip`)
+
+`2023/08/abc/def/attrib.zip`
+
+### 6&7: Assigning the path and record id and inserting into DB
+An initial DTO (Data object) is created with the meta data along with the uploaded path, userID and the record ID. There is a check made to ensure the serviceId belongs to the organization. After the verification, the data is inserted into the DB.
+
+### 8:Response
+The recordID generated in step 4 is sent back as response to the user.
