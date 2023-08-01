@@ -1,17 +1,17 @@
 import { QueryResult } from "pg";
-import flexDbClient from "../src/database/flex-data-source";
-import flexService from "../src/service/gtfs-flex-service";
-import { TdeiObjectFaker } from "./common/tdei-object-faker";
-import { FlexQueryParams } from "../src/model/gtfs-flex-get-query-params";
-import { GtfsFlexDTO } from "../src/model/gtfs-flex-dto";
+import flexDbClient from "../../src/database/flex-data-source";
+import flexService from "../../src/service/gtfs-flex-service";
+import { TdeiObjectFaker } from "../common/tdei-object-faker";
+import { FlexQueryParams } from "../../src/model/gtfs-flex-get-query-params";
+import { GtfsFlexDTO } from "../../src/model/gtfs-flex-dto";
 import { FileEntity } from "nodets-ms-core/lib/core/storage";
-import { mockCore, mockUtility } from "./common/mock-utils";
-import { FlexVersions } from "../src/database/entity/flex-version-entity";
-import UniqueKeyDbException from "../src/exceptions/db/database-exceptions";
-import { DuplicateException, InputException } from "../src/exceptions/http/http-exceptions";
-import HttpException from "../src/exceptions/http/http-base-exception";
+import { mockCore, mockUtility } from "../common/mock-utils";
+import { FlexVersions } from "../../src/database/entity/flex-version-entity";
+import UniqueKeyDbException from "../../src/exceptions/db/database-exceptions";
+import { DuplicateException, InputException } from "../../src/exceptions/http/http-exceptions";
+import HttpException from "../../src/exceptions/http/http-base-exception";
 import { Core } from "nodets-ms-core";
-import { ServiceDto } from "../src/model/service-dto";
+import { ServiceDto } from "../../src/model/service-dto";
 import fetchMock from "jest-fetch-mock";
 // group test using describe
 describe("Flex Service Test", () => {
