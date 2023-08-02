@@ -152,5 +152,5 @@ export class EventBusService implements IEventBusServiceInterface {
 }
 
 
-//const eventBusService = new EventBusService();
-//export default eventBusService;
+const eventBusService = new EventBusService();
+export default eventBusService;
