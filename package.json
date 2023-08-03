@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest  --testRegex 'test/unit'",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
+    "test:integration": "TEST_ENV=integration jest --testRegex 'test/integration' --forceExit",
     "build": "rimraf ./build && tsc",
     "start": "npm run build  && npm run copy:assets && node build/src/server.js",
     "start:dev": "nodemon",

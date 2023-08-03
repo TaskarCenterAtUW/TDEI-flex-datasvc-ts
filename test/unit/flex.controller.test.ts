@@ -1,11 +1,11 @@
-import gtfsFlexController from "../src/controller/gtfs-flex-controller";
-import { GtfsFlexDTO } from "../src/model/gtfs-flex-dto";
-import gtfsFlexService from "../src/service/gtfs-flex-service";
+import gtfsFlexController from "../../src/controller/gtfs-flex-controller";
+import { GtfsFlexDTO } from "../../src/model/gtfs-flex-dto";
+import gtfsFlexService from "../../src/service/gtfs-flex-service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import { TdeiObjectFaker } from "./common/tdei-object-faker";
-import HttpException from "../src/exceptions/http/http-base-exception";
-import { DuplicateException, InputException } from "../src/exceptions/http/http-exceptions";
-import { getMockFileEntity } from "./common/mock-utils";
+import { TdeiObjectFaker } from "../common/tdei-object-faker";
+import HttpException from "../../src/exceptions/http/http-base-exception";
+import { DuplicateException, InputException } from "../../src/exceptions/http/http-exceptions";
+import { getMockFileEntity } from "../common/mock-utils";
 
 // group test using describe
 describe("Flex Controller Test", () => {

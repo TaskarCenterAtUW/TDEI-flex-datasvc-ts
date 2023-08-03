@@ -82,3 +82,13 @@ describe("{{Component}}", () => {
 | Queue message service | Process Queue message | Functional| When validation service failed| Expect to fail the message processing |:white_check_mark:|
 | Queue message service | Process Queue message | Functional| When create Flex database failed| Expect to fail the message processing |:white_check_mark:|
 | Queue message service | Process Queue message | Functional| When permission denied| Expect to fail the message processing |:white_check_mark:|
+
+
+### Integration Test cases
+
+| Component | Feature Under Test | Scenario | Expectation | Status |
+|--|--|--|--|--|
+| Flex Service | Servicebus Integration | Subscribe to validation result topic to verify servicebus integration| Expect to return message |:white_check_mark:|
+| Flex Service | Permission Request | Verifying auth service hasPermission api integration| Expect to return false |:white_check_mark:|
+| Flex Service | Auth service | Verifying auth service generate secret api integration | Expect to return true |:white_check_mark:|
+| Flex Service | Get Service | Verifying service get service api integration | Expect to return true |:white_check_mark:|
