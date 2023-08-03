@@ -90,5 +90,5 @@ describe("{{Component}}", () => {
 |--|--|--|--|--|
 | Flex Service | Servicebus Integration | Subscribe to validation result topic to verify servicebus integration| Expect to return message |:white_check_mark:|
 | Flex Service | Permission Request | Verifying auth service hasPermission api integration| Expect to return false |:white_check_mark:|
-| Flex Service | Auth service | Verifying auth service generate secret api integration | Expect to return true |:white_check_mark:|
-| Flex Service | Get Service | Verifying service get service api integration | Expect to return true |:white_check_mark:|
+| Flex Service | Auth service | Verifying auth service generate secret api integration | Expect to return HTTP status 200 |:white_check_mark:|
+| Flex Service | Get Service | Verifying service get service api integration | Expect to return HTTP status 200 |:white_check_mark:|
