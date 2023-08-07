@@ -69,7 +69,7 @@ describe("Flex Integration Test", () => {
         //Act
         var eventBusService = new EventBusService();
         eventBusService.publishingTopic = mockPublishingTopic;
-        eventBusService.subscribeTopic();
+        eventBusService.subscribeTopic("temp-validation", "temp-validation-result");
 
         //Assert
         await expect(assertMessage()).resolves.toBeTruthy();
@@ -145,8 +145,4 @@ describe("Flex Integration Test", () => {
         //Assert
         expect(result.status == 200).toBeTruthy();
     }, 15000);
-
-
-    
-
 });
