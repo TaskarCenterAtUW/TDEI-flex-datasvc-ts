@@ -35,6 +35,7 @@ class App {
     }
 
     private subscribeUpload() {
+        this.eventBusService = new EventBusService();
         this.eventBusService.subscribeTopic();
     }
 
