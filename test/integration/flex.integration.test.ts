@@ -18,6 +18,10 @@ describe("Flex Integration Test", () => {
         done();
     });
 
+    beforeAll(()=>{
+        Core.initialize();
+    })
+
 
     /**
      * Environment dependency
@@ -35,7 +39,7 @@ describe("Flex Integration Test", () => {
         //Arrange
         var messageReceiver!: QueueMessage;
 
-        Core.initialize();
+        
         var topicToSubscribe = Core.getTopic("temp-validation", {
             provider: "Azure"
         });
@@ -145,4 +149,15 @@ describe("Flex Integration Test", () => {
         //Assert
         expect(result.status == 200).toBeTruthy();
     }, 15000);
+
+    test('Verifying the service can access File Storage with file URL ', async () => {
+        Core.initialize();
+        const fileUrl = 'https://tdeisamplestorage.blob.core.windows.net/gtfsflex/2023/FEBRUARY/0b41ebc5-350c-42d3-90af-3af4ad3628fb/valid_c8c76e89f30944d2b2abd2491bd95337.zip';
+        const fileEntity = await Core.getStorageClient()!.getFileFromUrl(fileUrl);
+        const streamData = await fileEntity?.getStream();
+        // const bufferLength = streamData?.read().length;
+        // expect(bufferLength).toBeGreaterThan(0);
+        expect(streamData).toBeTruthy();
+
+    },20000);
 });
