@@ -9,16 +9,17 @@ import { QueueMessageContent } from "../model/queue-message-model";
 import { Topic } from "nodets-ms-core/lib/core/queue/topic";
 import { QueueMessage } from "nodets-ms-core/lib/core/queue";
 import { randomUUID } from "crypto";
+import { env } from "process";
 
 export class EventBusService implements IEventBusServiceInterface {
     private queueConfig: AzureQueueConfig;
     public publishingTopic: Topic;
 
-    constructor() {
+    constructor(queueConnection: string = environment.eventBus.connectionString as string, publishingTopicName: string = environment.eventBus.dataServiceTopic as string) {
         Core.initialize();
         this.queueConfig = new AzureQueueConfig();
-        this.queueConfig.connectionString = environment.eventBus.connectionString as string;
-        this.publishingTopic = Core.getTopic(environment.eventBus.dataServiceTopic as string);
+        this.queueConfig.connectionString = queueConnection;
+        this.publishingTopic = Core.getTopic(publishingTopicName);
     }
 
     /**
@@ -66,17 +67,17 @@ export class EventBusService implements IEventBusServiceInterface {
                         });
                     return Promise.resolve();
                 } else {
-                    gtfsFlexService.createGtfsFlex(flexVersions).then((res) => {
+                    gtfsFlexService.createGtfsFlex(flexVersions).then(async (res) => {
                         console.info(`Flex record created successfully !`);
-                        this.publish(messageReceived,
+                       await this.publish(messageReceived,
                             {
                                 success: true,
                                 message: 'Flex request processed successfully !'
                             });
                         return Promise.resolve();
-                    }).catch((error: any) => {
+                    }).catch(async (error: any) => {
                         console.error('Error saving the flex version', error);
-                        this.publish(messageReceived,
+                      await this.publish(messageReceived,
                             {
                                 success: false,
                                 message: 'Error occured while processing flex request' + error
@@ -84,10 +85,10 @@ export class EventBusService implements IEventBusServiceInterface {
                         return Promise.resolve();
                     });
                 }
-            }).catch((error) => {
+            }).catch(async (error) => {
                 // Throw metadata validation errors
                 console.log('Failed to validate the flex versions');
-                this.publish(messageReceived,
+               await this.publish(messageReceived,
                     {
                         success: false,
                         message: 'Error with metadata' + error
@@ -97,7 +98,7 @@ export class EventBusService implements IEventBusServiceInterface {
 
         } catch (error) {
             console.error(tdeiRecordId, 'Error occured while processing flex request', error);
-            this.publish(messageReceived,
+           await this.publish(messageReceived,
                 {
                     success: false,
                     message: 'Error occured while processing flex request' + error
@@ -118,16 +119,16 @@ export class EventBusService implements IEventBusServiceInterface {
     /**
      * Subscribing to the interested topic & subscription to process the queue message
      */
-    subscribeTopic(): void {
+    subscribeTopic(validationTopic: string = environment.eventBus.validationTopic as string, validationSubscription: string = environment.eventBus.validationSubscription as string): void {
         Core.getTopic(environment.eventBus.validationTopic as string,
             this.queueConfig)
-            .subscribe(environment.eventBus.validationSubscription as string, {
+            .subscribe(validationSubscription, {
                 onReceive: this.processUpload,
                 onError: this.processUploadError
             });
     }
 
-    private publish(queueMessage: QueueMessage, response: {
+    private async publish(queueMessage: QueueMessage, response: {
         success: boolean,
         message: string
     }) {
@@ -138,7 +139,7 @@ export class EventBusService implements IEventBusServiceInterface {
         queueMessageContent.response.success = response.success;
         queueMessageContent.response.message = response.message;
         // Dont publish during development
-        this.publishingTopic.publish(QueueMessage.from(
+       await this.publishingTopic.publish(QueueMessage.from(
             {
                 messageType: 'flex-data-service',
                 data: queueMessageContent,
@@ -152,5 +153,5 @@ export class EventBusService implements IEventBusServiceInterface {
 }
 
 
-const eventBusService = new EventBusService();
-export default eventBusService;
+// const eventBusService = new EventBusService();
+// export default eventBusService;
