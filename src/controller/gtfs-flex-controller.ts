@@ -114,28 +114,28 @@ class GtfsFlexController implements IController {
         try {
             const meta = JSON.parse(request.body['meta']);
             const userId = request.body.user_id;
-            // console.log(meta);
+            console.log(meta);
             const gtfsdto = GtfsFlexUploadMeta.from(meta);
             // console.log(gtfsdto);
             const result = await validate(gtfsdto);
-            // console.log('result', result);
+            console.log('result', result);
             // console.log(gtfsdto.collection_date);
-            const uid = storageService.generateRandomUUID();
+            const uid = storageService.generateRandomUUID(); // Fetches a random UUID for the record
             const folderPath = storageService.getFolderPath(gtfsdto.tdei_org_id,uid);
             // return response.status(200).send('Done '+userId);
             const uploadedFile = request.file;
             uploadedFile?.originalname
             const uploadPath = path.join(folderPath,uploadedFile!.originalname)
-            // console.log(uploadPath);
-            await storageService.uploadFile(uploadPath,'application/zip',Readable.from(uploadedFile!.buffer))
+            console.log(uploadPath);
+            const remoteUrl = await storageService.uploadFile(uploadPath,'application/zip',Readable.from(uploadedFile!.buffer))
             if (!request.body) {
                 response.status(400).send('Input validation failed with below reasons : empty body passed');
                 return next(new HttpException(400, 'Input validation failed with below reasons : empty body passed'));
             }
-
+            console.log(remoteUrl);
             let flex = FlexVersions.from(meta);
             flex.tdei_record_id = uid;
-            flex.file_upload_path = uploadPath;
+            flex.file_upload_path = remoteUrl;
             flex.uploaded_by = userId;
             const returnInfo = await gtfsFlexService.createGtfsFlex(flex);  // Store in database
             console.log(flex);

@@ -10,16 +10,54 @@ import { FeatureCollection } from "geojson";
  * Validation checks are as per 
  * https://docs.google.com/spreadsheets/d/1JpG_9Z1nvTgZc2e0rzEl3RQ2fOWW9R0_ecfZm7fn940/edit#gid=0
  * 
- * tdei_org_id: '5e339544-3b12-40a5-8acd-78c66d1fa981',
-  tdei_service_id: '333',
-  collected_by: 'testuser',
-  collection_date: '2023-03-02T04:22:42.493Z',
-  collection_method: 'manual',
-  valid_from: '2023-03-02T04:22:42.493Z',
-  valid_to: '2023-03-02T04:22:42.493Z',
-  data_source: 'TDEITools',
-  polygon: { coordinates: [ [Array] ] },
-  flex_schema_version: 'v2.0'
+ * 
+  {
+    "tdei_org_id": "e1956869-02d9-4e14-8391-6024406ced41",
+    "tdei_service_id": "a73d0a95-f9e2-4067-b4c9-a1f82419e82e",
+    "collected_by": "testuser",
+    "collection_date": "2023-03-02T04:22:42.493Z",
+    "collection_method": "manual",
+    "valid_from": "2023-03-02T04:22:42.493Z",
+    "valid_to": "2023-03-02T04:22:42.493Z",
+    "data_source": "TDEITools",
+    "polygon": {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -122.32615394375401,
+              47.61267259760652
+            ],
+            [
+              -122.32615394375401,
+              47.60504395643625
+            ],
+            [
+              -122.3155850364906,
+              47.60504395643625
+            ],
+            [
+              -122.3155850364906,
+              47.61267259760652
+            ],
+            [
+              -122.32615394375401,
+              47.61267259760652
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      }
+    }
+  ]
+},
+    "flex_schema_version": "v2.0"
+  }
  */
 export class GtfsFlexUploadMeta extends AbstractDomainEntity{
 
