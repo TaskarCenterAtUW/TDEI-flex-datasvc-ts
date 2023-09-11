@@ -248,3 +248,32 @@ An initial DTO (Data object) is created with the meta data along with the upload
 
 ### 8:Response
 The recordID generated in step 4 is sent back as response to the user.
+
+
+## Steps to run local database
+
+To run the local database setup, you will have to bring up the `postgresql` server separately in a docker
+
+### Bring up the db server and pgadmin tool
+
+`docker compose up` 
+
+The above command will invoke and bring up two dockers running as a single group
+- postgresql with gis
+- pgadmin tool for GUI
+
+### Add local server in pgadmin tool
+- go to http://localhost:5000 and add server with the following parameters
+
+- server name : Local
+- host: postgres
+- user: POSTGRES_USER in .env file
+- password: POSTGRES_PASSWROD in .env file
+
+### Import gtfs-flex database structure
+- In the sql query tool of the gtfs-flex database, execute the query available in `src/scripts/init.sql`
+
+The database is ready to be connected to the service
+
+### Edit the host in .env file
+In the `.env` file, `POSTGRES_HOST=localhost` and run the service with `npm run start`
