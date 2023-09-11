@@ -2,6 +2,7 @@ import { IsDate, IsISO8601, IsIn, IsNotEmpty, isNotEmpty } from "class-validator
 import { AbstractDomainEntity, Prop } from "nodets-ms-core/lib/models";
 import { IsValidPolygon } from "../validators/polygon-validator";
 import { FeatureCollection } from "geojson";
+import { Readable } from "stream";
 
 /**
  * Separated out class to get and validate the input metadata
@@ -105,6 +106,14 @@ export class GtfsFlexUploadMeta extends AbstractDomainEntity{
     @IsNotEmpty()
     valid_from!:Date;
 
-
+    /**
+     * Returns the readable stream of the information
+     * @returns Readable stream for upload
+     */
+    getStream(): NodeJS.ReadableStream {
+        const stringContent = JSON.stringify(this);
+        const buffer =  Buffer.from(stringContent)
+        return Readable.from(buffer);
+    }
 
 }

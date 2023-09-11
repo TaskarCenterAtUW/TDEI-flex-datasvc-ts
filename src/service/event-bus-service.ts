@@ -160,14 +160,17 @@ export class EventBusService implements IEventBusServiceInterface {
     /**
      * Publishes the upload of a gtfs-flex file
      */
-    public publishUpload(request:GtfsFlexUploadMeta, recordId:string,file_upload_path:string, userId:string){
+    public publishUpload(request:GtfsFlexUploadMeta, recordId:string,file_upload_path:string, userId:string, meta_file_path:string){
        const messageContent =  QueueMessageContent.from({
             stage:'flex-upload',
             request:request,
             userId:userId,
             orgId:request.tdei_org_id,
             tdeiRecordId:recordId,
-            meta:{'file_upload_path':file_upload_path},
+            meta:{
+                'file_upload_path':file_upload_path,
+                'meta_file_path':meta_file_path
+            },
             response:{
                 success:true,
                 message:'File uploaded for the organization: '+request.tdei_org_id+' with record id'+recordId
