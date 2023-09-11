@@ -5,13 +5,12 @@ import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
 import { FileEntity } from "nodets-ms-core/lib/core/storage";
 import gtfsFlexService from "../service/gtfs-flex-service";
 import HttpException from "../exceptions/http/http-base-exception";
-import { DuplicateException, FileTypeException, InputException } from "../exceptions/http/http-exceptions";
+import { FileTypeException, InputException } from "../exceptions/http/http-exceptions";
 import { FlexVersions } from "../database/entity/flex-version-entity";
 import { validate, ValidationError } from "class-validator";
 import { Version, Versions } from "../model/versions-dto";
 import { environment } from "../environment/environment";
 import multer, { memoryStorage } from "multer";
-import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
 import { GtfsFlexUploadMeta } from "../model/gtfs-flex-upload-meta";
 import storageService from "../service/storage-service";
 import path from "path";
@@ -139,7 +138,7 @@ class GtfsFlexController implements IController {
             const metaFilePath = path.join(folderPath,'meta.json');
             const metaUrl = await storageService.uploadFile(metaFilePath,'text/json',gtfsdto.getStream());
             // Insert into database
-            let flex = FlexVersions.from(meta);
+            const flex = FlexVersions.from(meta);
             flex.tdei_record_id = uid;
             flex.file_upload_path = remoteUrl;
             flex.uploaded_by = userId;
