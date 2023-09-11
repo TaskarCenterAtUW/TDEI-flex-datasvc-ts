@@ -5,7 +5,7 @@ import { getMockReq, getMockRes } from "@jest-mock/express";
 import { TdeiObjectFaker } from "../common/tdei-object-faker";
 import HttpException from "../../src/exceptions/http/http-base-exception";
 import { DuplicateException, InputException } from "../../src/exceptions/http/http-exceptions";
-import { getMockFileEntity, mockMulter } from "../common/mock-utils";
+import { getMockFileEntity } from "../common/mock-utils";
 
 
 
