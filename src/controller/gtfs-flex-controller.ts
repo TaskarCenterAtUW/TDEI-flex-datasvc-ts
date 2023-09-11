@@ -16,9 +16,10 @@ import { GtfsFlexUploadMeta } from "../model/gtfs-flex-upload-meta";
 import storageService from "../service/storage-service";
 import path from "path";
 import { Readable } from "stream";
-import eventBusService from "../service/event-bus-service";
+// import EventBusService from "../service/event-bus-service";
 import { tokenValidator } from "../middleware/token-validation-middleware";
 import { metajsonValidator } from "../middleware/json-validation-middleware";
+import { EventBusService } from "../service/event-bus-service";
 
 /**
  * Multer for multiple uploads
@@ -45,6 +46,7 @@ class GtfsFlexController implements IController {
     constructor() {
         this.intializeRoutes();
     }
+    eventBusService = new EventBusService();
 
     public intializeRoutes() {
         this.router.get(this.path, this.getAllGtfsFlex);
@@ -144,7 +146,7 @@ class GtfsFlexController implements IController {
             const returnInfo = await gtfsFlexService.createGtfsFlex(flex);
 
             // Publish to the topic
-            eventBusService.publishUpload(gtfsdto,uid,remoteUrl,userId,metaUrl);
+            this.eventBusService.publishUpload(gtfsdto,uid,remoteUrl,userId,metaUrl);
             // Also send the information to the queue
             console.log('Responding to request');
             return response.status(200).send(uid);
