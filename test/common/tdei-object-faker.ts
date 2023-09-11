@@ -127,4 +127,53 @@ export class TdeiObjectFaker {
     static getGtfsFlexQueueMessageSuccess() {
         return gtfsFlexValidationSuccessMessage;
     }
+    static getGtfsFlexPayload2(){
+        return {
+            "tdei_org_id": "e1956869-02d9-4e14-8391-6024406ced41",
+            "tdei_service_id": "a73d0a95-f9e2-4067-b4c9-a1f82419e82e",
+            "collected_by": "testuser",
+            "collection_date": "2023-03-02T04:22:42.493Z",
+            "collection_method": "manual",
+            "valid_from": "2023-03-02T04:22:42.493Z",
+            "valid_to": "2023-03-02T04:22:42.493Z",
+            "data_source": "TDEITools",
+            "polygon": {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "properties": {},
+              "geometry": {
+                "coordinates": [
+                  [
+                    [
+                      -122.32615394375401,
+                      47.61267259760652
+                    ],
+                    [
+                      -122.32615394375401,
+                      47.60504395643625
+                    ],
+                    [
+                      -122.3155850364906,
+                      47.60504395643625
+                    ],
+                    [
+                      -122.3155850364906,
+                      47.61267259760652
+                    ],
+                    [
+                      -122.32615394375401,
+                      47.61267259760652
+                    ]
+                  ]
+                ],
+                "type": "Polygon"
+              }
+            }
+          ]
+        },
+            "flex_schema_version": "v2.0"
+          }
+    }
 }
