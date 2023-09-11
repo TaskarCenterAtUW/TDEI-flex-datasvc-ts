@@ -144,7 +144,7 @@ class GtfsFlexController implements IController {
             const returnInfo = await gtfsFlexService.createGtfsFlex(flex);
 
             // Publish to the topic
-            eventBusService.publishUpload(gtfsdto,uid,uploadPath,userId,metaUrl);
+            eventBusService.publishUpload(gtfsdto,uid,remoteUrl,userId,metaUrl);
             // Also send the information to the queue
             console.log('Responding to request');
             return response.status(200).send(uid);
