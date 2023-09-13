@@ -32,6 +32,7 @@ describe("Flex Controller Test", () => {
                 //Arrange
                 const req = getMockReq({ body: { collection_date: "2023" } });
                 const { res, next } = getMockRes();
+                const getAllGtfsFlexSpy =
                 jest
                     .spyOn(gtfsFlexService, "getAllGtfsFlex")
                     .mockRejectedValueOnce(new InputException("Invalid date provided."));
@@ -80,7 +81,7 @@ describe("Flex Controller Test", () => {
                 //Arrange
                 const req = getMockReq();
                 const { res, next } = getMockRes();
-
+                const getGtfsFlexByIdSpy =
                 jest
                     .spyOn(gtfsFlexService, "getGtfsFlexById")
                     .mockRejectedValueOnce(new HttpException(404, "Record not found"));
@@ -96,7 +97,7 @@ describe("Flex Controller Test", () => {
                 //Arrange
                 const req = getMockReq();
                 const { res, next } = getMockRes();
-
+                const getGtfsFlexByIdSpy =
                 jest
                     .spyOn(gtfsFlexService, "getGtfsFlexById")
                     .mockRejectedValueOnce(new Error("Unexpected error"));
