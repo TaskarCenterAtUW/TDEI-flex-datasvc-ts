@@ -201,4 +201,19 @@ describe("Flex Controller Test", () => {
             });
         });
     });
+
+    describe("Get Version list", () => {
+        describe("Functional", () => {
+
+            test("When requested version info, Expect to return HTTP status 200", async () => {
+                //Arrange
+                let req = getMockReq();
+                const { res, next } = getMockRes();
+                //Act
+                await gtfsFlexController.getVersions(req, res, next);
+                //Assert
+                expect(res.status).toHaveBeenCalledWith(200);
+            });
+        });
+    });
 });
