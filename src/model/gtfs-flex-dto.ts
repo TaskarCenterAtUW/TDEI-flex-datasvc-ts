@@ -24,4 +24,6 @@ export class GtfsFlexDTO extends AbstractDomainEntity {
     flex_schema_version!: string;
     @Prop()
     polygon: FeatureCollection | undefined;
+    @Prop()
+    download_url!: string;
 }

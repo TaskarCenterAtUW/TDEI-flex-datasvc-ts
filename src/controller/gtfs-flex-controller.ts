@@ -8,9 +8,11 @@ import HttpException from "../exceptions/http/http-base-exception";
 import { DuplicateException, InputException } from "../exceptions/http/http-exceptions";
 import { FlexVersions } from "../database/entity/flex-version-entity";
 import { validate, ValidationError } from "class-validator";
+import { Version, Versions } from "../model/versions-dto";
+import { environment } from "../environment/environment";
 
 class GtfsFlexController implements IController {
-    public path = '/api/v1/gtfsflex';
+    public path = '/api/v1/gtfs-flex';
     public router = express.Router();
     constructor() {
         this.intializeRoutes();
@@ -20,12 +22,26 @@ class GtfsFlexController implements IController {
         this.router.get(this.path, this.getAllGtfsFlex);
         this.router.get(`${this.path}/:id`, this.getGtfsFlexById);
         this.router.post(this.path, this.createGtfsFlex);
+        this.router.get(`${this.path}/versions/info`, this.getVersions);
+    }
+
+    getVersions = async (request: Request, response: express.Response, next: NextFunction) => {
+        let versionsList = new Versions([{
+            documentation: environment.getewayUrl as string,
+            specification: "https://github.com/MobilityData/gtfs-flex",
+            version: "v2.0"
+        }]);
+
+        response.status(200).send(versionsList);
     }
 
     getAllGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
         try {
             var params: FlexQueryParams = new FlexQueryParams(JSON.parse(JSON.stringify(request.query)));
             const gtfsFlex = await gtfsFlexService.getAllGtfsFlex(params);
+            gtfsFlex.forEach(x => {
+                x.download_url = `${this.path}/${x.tdei_record_id}`;
+            })
             response.status(200).send(gtfsFlex);
         } catch (error) {
             console.error("Error while fetching the flex information", error);
