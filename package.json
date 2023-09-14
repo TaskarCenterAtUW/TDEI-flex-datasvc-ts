@@ -50,7 +50,7 @@
     "jest-fetch-mock": "^3.0.3",
     "lodash": "4.17.21",
     "node-fetch": "^2.6.7",
-    "nodets-ms-core": "0.0.8",
+    "nodets-ms-core": "0.0.9",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13"
   }
