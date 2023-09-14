@@ -26,5 +26,5 @@ export const environment = {
     serviceUrl: process.env.SERVICE_URL,
     secretGenerateUrl: process.env.AUTH_HOST + '/api/v1/generateSecret',
     secretVerifyUrl: process.env.AUTH_HOST + '/api/v1/validateSecret',
-    getewayUrl: process.env.GATEWAY_URL
+    gatewayUrl: process.env.GATEWAY_URL
 }
