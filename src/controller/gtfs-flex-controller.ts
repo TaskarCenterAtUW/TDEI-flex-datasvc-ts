@@ -52,6 +52,7 @@ class GtfsFlexController implements IController {
         this.router.get(`${this.path}/:id`, this.getGtfsFlexById);
         this.router.post(this.path, this.createGtfsFlex);
         this.router.get(`${this.path}/versions/info`, this.getVersions);
+        this.router.post(this.path,upload.single('file'),metajsonValidator,tokenValidator,this.createGtfsFlex);
     }
 
     getVersions = async (request: Request, response: express.Response, next: NextFunction) => {
@@ -62,9 +63,7 @@ class GtfsFlexController implements IController {
         }]);
 
         response.status(200).send(versionsList);
-        this.router.post(this.path,upload.single('file') ,this.createGtfsFlex);
-        this.router.post(this.path,upload.single('file'),tokenValidator,this.createGtfsFlex);
-        this.router.post(this.path,upload.single('file'),metajsonValidator,tokenValidator,this.createGtfsFlex);
+       
     }
 
     getAllGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
