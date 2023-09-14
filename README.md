@@ -34,6 +34,7 @@ Application configuration is read from .env file. Below are the list of environe
 |SSL | false when running locally otherwise true|
 |SERVICE_URL | User management /service url|
 |DATASVC_TOPIC | Data service topic|
+| GATEWAY_URL | Gateway Url |
 
 
 ## Local Postgresql database setup
