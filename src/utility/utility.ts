@@ -19,15 +19,14 @@ export class Utility {
         return true;
     }
 
-    public static copy<T extends Object>(target: T, source: any): T {
+    public static copy<T extends object>(target: T, source: any): T {
         Object.keys(target).forEach(key => {
-            if (source[key] != undefined) {
-                target[key as keyof Object] = source[key];
-            }
-        }
-        );
+          if (source[key] != undefined) {
+            target[key as keyof T] = source[key];
+          }
+        });
         return target;
-    }
+      }
 
     public static async generateSecret(): Promise<string> {
         let secret = null;

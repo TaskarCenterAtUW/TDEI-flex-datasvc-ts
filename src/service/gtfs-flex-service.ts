@@ -16,8 +16,6 @@ import { Utility } from "../utility/utility";
 import { IGtfsFlexService } from "./interface/gtfs-flex-service-interface";
 
 class GtfsFlexService implements IGtfsFlexService {
-    constructor() {
-    }
 
     /**
     * Gets the GTFS Flex details
@@ -25,21 +23,21 @@ class GtfsFlexService implements IGtfsFlexService {
     */
     async getAllGtfsFlex(params: FlexQueryParams): Promise<GtfsFlexDTO[]> {
         //Builds the query object. All the query consitions can be build in getQueryObject()
-        let queryObject = params.getQueryObject();
+        const queryObject = params.getQueryObject();
 
-        let queryConfig = <QueryConfig>{
+        const queryConfig = <QueryConfig>{
             text: queryObject.getQuery(),
             values: queryObject.getValues()
         }
 
-        let result = await flexDbClient.query(queryConfig);
+        const result = await flexDbClient.query(queryConfig);
 
-        let list: GtfsFlexDTO[] = [];
+        const list: GtfsFlexDTO[] = [];
         result.rows.forEach(x => {
 
-            let flex = GtfsFlexDTO.from(x);
+            const flex = GtfsFlexDTO.from(x);
             if (flex.polygon) {
-                var polygon = JSON.parse(x.polygon2) as Geometry;
+                const polygon = JSON.parse(x.polygon2) as Geometry;
                 flex.polygon = {
                     type: "FeatureCollection",
                     features: [
@@ -66,13 +64,13 @@ class GtfsFlexService implements IGtfsFlexService {
             values: [id],
         }
 
-        let result = await flexDbClient.query(query);
+        const result = await flexDbClient.query(query);
 
         if (result.rows.length == 0) throw new HttpException(404, "Record not found");
 
         const storageClient = Core.getStorageClient();
         if (storageClient == null) throw new Error("Storage not configured");
-        let url: string = decodeURIComponent(result.rows[0].file_upload_path);
+        const url: string = decodeURIComponent(result.rows[0].file_upload_path);
         return storageClient.getFileFromUrl(url);
     }
 
@@ -82,10 +80,13 @@ class GtfsFlexService implements IGtfsFlexService {
     */
     async createGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
         try {
-            flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path!);
-
+            
+            if (flexInfo.file_upload_path !== undefined && flexInfo.file_upload_path !== null) {
+                flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path);
+            }
+            
             //Validate service_id 
-            let service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_org_id);
+            const service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_org_id);
             if (!service) {
                 throw new Error("Service id not found or inactive.");
             }
@@ -102,7 +103,7 @@ class GtfsFlexService implements IGtfsFlexService {
             }
             await flexDbClient.query(flexInfo.getInsertQuery());
 
-            let flex = GtfsFlexDTO.from(flexInfo);
+            const flex = GtfsFlexDTO.from(flexInfo);
             return Promise.resolve(flex);
         } catch (error) {
 
@@ -124,7 +125,7 @@ class GtfsFlexService implements IGtfsFlexService {
      */
     async getServiceById(serviceId: string, orgId: string): Promise<ServiceDto> {
         try {
-            let secretToken = await Utility.generateSecret();
+            const secretToken = await Utility.generateSecret();
             const result = await fetch(`${environment.serviceUrl}?tdei_service_id=${serviceId}&tdei_org_id=${orgId}&page_no=1&page_size=1`, {
                 method: 'get',
                 headers: { 'Content-Type': 'application/json', 'x-secret': secretToken }

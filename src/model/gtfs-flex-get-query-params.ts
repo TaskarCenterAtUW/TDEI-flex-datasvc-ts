@@ -1,4 +1,4 @@
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsOptional, Length, max, min } from "class-validator";
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsOptional } from "class-validator";
 import { DynamicQueryObject, SqlORder } from "../database/dynamic-query-object";
 import { InputException } from "../exceptions/http/http-exceptions";
 import { Utility } from "../utility/utility";
@@ -15,16 +15,16 @@ export class FlexQueryParams {
     @IsOptional()
     tdei_service_id: string | undefined;
     @IsOptional()
-    confidence_level: number = 0;
+    confidence_level = 0;
     @IsOptional()
     @IsArray()
     @ArrayMinSize(4)
     @ArrayMaxSize(4)
     bbox: Array<number> = [];
     @IsOptional()
-    page_no: number = 1;
+    page_no = 1;
     @IsOptional()
-    page_size: number = 10;
+    page_size = 10;
 
     constructor(init?: Partial<FlexQueryParams>) {
         Object.assign(this, init);
@@ -35,7 +35,7 @@ export class FlexQueryParams {
      * @returns DynamicQueryObject
      */
     getQueryObject() {
-        let queryObject: DynamicQueryObject = new DynamicQueryObject();
+        const queryObject: DynamicQueryObject = new DynamicQueryObject();
         queryObject.buildSelect("flex_versions", ["ST_AsGeoJSON(polygon) as polygon2, *"]);
         queryObject.buildPagination(this.page_no, this.page_size);
         queryObject.buildOrder("uploaded_date", SqlORder.DESC);
