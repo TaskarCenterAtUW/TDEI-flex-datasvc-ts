@@ -9,7 +9,7 @@
     "test:coverage": "jest --coverage",
     "test:integration": "TEST_ENV=integration jest --testRegex 'test/integration' --forceExit",
     "build": "rimraf ./build && tsc",
-    "start": "npm run build  && npm run copy:assets && node build/src/server.js",
+    "start": "npm run build && node build/src/server.js",
     "start:dev": "nodemon",
     "copy:assets": "cp -r 'src/assets/' 'build/src/assets/'",
     "lint": "eslint \"**/*.{ts,tsx}\""
@@ -24,6 +24,7 @@
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.9",
     "@types/pg": "^8.6.6",
+    "@types/multer":"1.4.7",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "eslint": "^8.29.0",
@@ -33,7 +34,8 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.2",
+    "@types/jsonwebtoken": "9.0.2"
   },
   "dependencies": {
     "@azure/service-bus": "^7.7.3",
@@ -52,6 +54,8 @@
     "node-fetch": "^2.6.7",
     "nodets-ms-core": "0.0.9",
     "pg": "^8.8.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "multer":"1.4.5-lts.1",
+    "jsonwebtoken":"9.0.1"
   }
 }

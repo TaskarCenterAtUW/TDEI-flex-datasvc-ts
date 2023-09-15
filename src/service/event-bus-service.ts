@@ -9,17 +9,20 @@ import { QueueMessageContent } from "../model/queue-message-model";
 import { Topic } from "nodets-ms-core/lib/core/queue/topic";
 import { QueueMessage } from "nodets-ms-core/lib/core/queue";
 import { randomUUID } from "crypto";
-import { env } from "process";
+import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
+import { GtfsFlexUploadMeta } from "../model/gtfs-flex-upload-meta";
 
 export class EventBusService implements IEventBusServiceInterface {
     private queueConfig: AzureQueueConfig;
     public publishingTopic: Topic;
+    public uploadTopic: Topic;
 
     constructor(queueConnection: string = environment.eventBus.connectionString as string, publishingTopicName: string = environment.eventBus.dataServiceTopic as string) {
         Core.initialize();
         this.queueConfig = new AzureQueueConfig();
         this.queueConfig.connectionString = queueConnection;
         this.publishingTopic = Core.getTopic(publishingTopicName);
+        this.uploadTopic = Core.getTopic(environment.eventBus.uploadTopic as string);
     }
 
     /**
@@ -152,6 +155,35 @@ export class EventBusService implements IEventBusServiceInterface {
             }
         ));
         console.log("Publishing message for : ", queueMessageContent.tdeiRecordId);
+    }
+
+    /**
+     * Publishes the upload of a gtfs-flex file
+     */
+    public publishUpload(request:GtfsFlexUploadMeta, recordId:string,file_upload_path:string, userId:string, meta_file_path:string){
+       const messageContent =  QueueMessageContent.from({
+            stage:'flex-upload',
+            request:request,
+            userId:userId,
+            orgId:request.tdei_org_id,
+            tdeiRecordId:recordId,
+            meta:{
+                'file_upload_path':file_upload_path,
+                'meta_file_path':meta_file_path
+            },
+            response:{
+                success:true,
+                message:'File uploaded for the organization: '+request.tdei_org_id+' with record id'+recordId
+            }
+        });
+        const message = QueueMessage.from(
+            {
+                messageType:'gtfs-flex-upload',
+                data:messageContent,
+
+            }
+        )
+        this.uploadTopic.publish(message);
     }
 }
 

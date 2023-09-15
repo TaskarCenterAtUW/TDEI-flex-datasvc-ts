@@ -17,7 +17,7 @@ export interface IGtfsFlexService {
     getGtfsFlexById(id: string): Promise<FileEntity>;
     /**
     * Creates new GTFS Flex in the TDEI system.
-    * @param pathwayInfo GTFS Flex object 
+    * @param flexInfo GTFS Flex object
     */
     createGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO>;
 
