@@ -277,3 +277,5 @@ The database is ready to be connected to the service
 
 ### Edit the host in .env file
 In the `.env` file, `POSTGRES_HOST=localhost` and run the service with `npm run start`
+
+dummy branch
