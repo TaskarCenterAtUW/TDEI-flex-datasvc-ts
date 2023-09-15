@@ -50,7 +50,6 @@ class GtfsFlexController implements IController {
     public intializeRoutes() {
         this.router.get(this.path, this.getAllGtfsFlex);
         this.router.get(`${this.path}/:id`, this.getGtfsFlexById);
-        this.router.post(this.path, this.createGtfsFlex);
         this.router.get(`${this.path}/versions/info`, this.getVersions);
         this.router.post(this.path,upload.single('file'),metajsonValidator,tokenValidator,this.createGtfsFlex);
     }
