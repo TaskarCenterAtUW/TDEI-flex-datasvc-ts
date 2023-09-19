@@ -1,6 +1,7 @@
 import { FeatureCollection } from "geojson";
 import { FlexVersions } from "../../src/database/entity/flex-version-entity";
 import gtfsFlexValidationSuccessMessage from "../test-data/flex-validation-success.message.json";
+import { Readable } from "stream";
 
 export class TdeiObjectFaker {
     static getGtfsFlexVersion() {
@@ -175,5 +176,20 @@ export class TdeiObjectFaker {
         },
             "flex_schema_version": "v2.0"
           }
+    }
+
+    static getMockUploadFile() {
+        return {
+            originalname:'sample.zip',
+            mimetype:'application/zip',
+            path:'sample/path/to.zip',
+            buffer:Buffer.from('sample-buffer'),
+            fieldname:'file',
+            filename:'sample.zip',
+            size:100,
+            stream:Readable.from(''),
+            encoding:'',
+            destination:''
+        };
     }
 }

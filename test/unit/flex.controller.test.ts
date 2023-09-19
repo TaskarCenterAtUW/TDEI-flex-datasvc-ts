@@ -5,7 +5,8 @@ import { getMockReq, getMockRes } from "@jest-mock/express";
 import { TdeiObjectFaker } from "../common/tdei-object-faker";
 import HttpException from "../../src/exceptions/http/http-base-exception";
 import { DuplicateException, InputException } from "../../src/exceptions/http/http-exceptions";
-import { getMockFileEntity } from "../common/mock-utils";
+import { getMockFileEntity, mockCore, mockMulter } from "../common/mock-utils";
+import { Readable } from "stream";
 
 
 
@@ -113,12 +114,53 @@ describe("Flex Controller Test", () => {
         });
     });
 
+    describe('Create flex file', ()=>{
+
+        test('When valid input provided, expect to return tdei_record_id for new record', async ()=>{
+            let req = getMockReq({ body: {"meta":JSON.stringify(TdeiObjectFaker.getGtfsFlexPayload2()),"file": Buffer.from('whatever') }});
+            req.file = TdeiObjectFaker.getMockUploadFile();
+            mockCore();
+            const {res, next} = getMockRes()
+            const dummyResponse =  <GtfsFlexDTO>{
+                tdei_record_id:"test_record_id"
+            }
+            const createGtfsFlexSpy = jest.spyOn(gtfsFlexService,"createGtfsFlex").mockResolvedValueOnce(dummyResponse)
+            await gtfsFlexController.createGtfsFlex(req,res,next)
+            expect(createGtfsFlexSpy).toHaveBeenCalledTimes(1);
+            expect(res.status).toBeCalledWith(200);
+        })
+
+        test('When invalid meta is provided, expect to return 400 error', async ()=>{
+            const payload = TdeiObjectFaker.getGtfsFlexPayload2()
+            payload.collection_method = ""; // Empty collection method
+            let req = getMockReq({ body: {"meta":JSON.stringify(payload),"file": Buffer.from('whatever') }});
+            req.file = TdeiObjectFaker.getMockUploadFile();
+            const {res, next} = getMockRes()
+            await gtfsFlexController.createGtfsFlex(req,res,next);
+            expect(res.status).toBeCalledWith(400);
+        })
+        test('When database exception occurs, expect to return 400 error', async ()=>{
+
+            let req = getMockReq({ body: {"meta":JSON.stringify(TdeiObjectFaker.getGtfsFlexPayload2()),"file": Buffer.from('whatever') }});
+            req.file = TdeiObjectFaker.getMockUploadFile();
+            mockCore();
+            const {res, next} = getMockRes()
+           
+            const createGtfsFlexSpy = jest.spyOn(gtfsFlexService,"createGtfsFlex").mockRejectedValueOnce(new DuplicateException("test_record_id"))
+            await gtfsFlexController.createGtfsFlex(req,res,next)
+            expect(createGtfsFlexSpy).toHaveBeenCalledTimes(1);
+            expect(res.status).toBeCalledWith(400);
+
+        })
+
+    })
+
     // describe("Create Flex file", () => {
 
     //     describe("Functional", () => {
     //         test("When valid input provided, Expect to return tdei_record_id for new record", async () => {
     //             //Arrange
-    //             let req = getMockReq({ body: {"meta":JSON.stringify(TdeiObjectFaker.getGtfsFlexPayload2()),"file": Buffer.from('whatever') }});
+                // let req = getMockReq({ body: {"meta":JSON.stringify(TdeiObjectFaker.getGtfsFlexPayload2()),"file": Buffer.from('whatever') }});
     //             mockMulter();
     //             const { res, next } = getMockRes();
     //             var dummyResponse = <GtfsFlexDTO>{

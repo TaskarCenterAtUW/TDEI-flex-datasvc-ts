@@ -4,6 +4,7 @@ import { FileEntity, StorageClient, StorageContainer } from "nodets-ms-core/lib/
 import { Readable } from "stream"
 import { QueueMessageContent } from "../../src/model/queue-message-model";
 import { Utility } from "../../src/utility/utility";
+import { NextFunction, Request, Response } from "express";
 
 export function getMockFileEntity() {
     const fileEntity: FileEntity = {
@@ -87,5 +88,34 @@ export function mockQueueMessageContent(permissionResolve = true) {
 
 export function mockUtility() {
     jest.spyOn(Utility, "generateSecret")
-        .mockResolvedValueOnce("secretr_token");
+        .mockResolvedValueOnce("secret_token");
 }
+
+export function mockMulter() {
+    jest.mock('multer', ()=>{
+        const multer = () =>({
+            any:() =>{
+                return (req:Request,res:Response,next:NextFunction)=>{
+                    req.body.user_id ='sample-user';
+                    req.file = {
+                        originalname:'sample.zip',
+                        mimetype:'application/zip',
+                        path:'sample/path/to.zip',
+                        buffer:Buffer.from('sample-buffer'),
+                        fieldname:'file',
+                        filename:'sample.zip',
+                        size:100,
+                        stream:Readable.from(''),
+                        encoding:'',
+                        destination:''
+                    }
+
+                    return next()
+                }
+            }
+        })
+        multer.memoryStorage = () => jest.fn()
+        return multer
+    })
+}
+
