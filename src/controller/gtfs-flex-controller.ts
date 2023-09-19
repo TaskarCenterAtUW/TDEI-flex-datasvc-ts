@@ -152,7 +152,14 @@ class GtfsFlexController implements IController {
 
         } catch (error) {
             console.error('Error saving the flex file', error);
-            response.status(500).send('Error saving the flex file');
+           
+            if (error instanceof HttpException)
+            {
+                next(error)
+            }
+            else {
+                response.status(500).send('Error saving the flex file');
+            }
         }
     }
 }
