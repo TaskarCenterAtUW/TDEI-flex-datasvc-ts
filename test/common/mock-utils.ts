@@ -81,7 +81,7 @@ export function getMockTopic() {
 }
 
 export function mockCore() {
-    jest.spyOn(Core, "initialize");
+    jest.spyOn(Core, "initialize").mockImplementation();
     jest.spyOn(Core, "getStorageClient").mockImplementation(() => { return getMockStorageClient(); });
     jest.spyOn(Core, "getTopic").mockImplementation(() => { return getMockTopic(); });
    

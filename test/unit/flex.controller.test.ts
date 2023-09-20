@@ -6,7 +6,7 @@ import { TdeiObjectFaker } from "../common/tdei-object-faker";
 import HttpException from "../../src/exceptions/http/http-base-exception";
 import { DuplicateException, InputException, OverlapException } from "../../src/exceptions/http/http-exceptions";
 import { getMockFileEntity, mockCore, mockMulter } from "../common/mock-utils";
-import { Readable } from "stream";
+import storageService from "../../src/service/storage-service";
 
 
 
@@ -116,15 +116,21 @@ describe("Flex Controller Test", () => {
 
     describe('Create flex file', ()=>{
 
+        beforeAll(()=>{
+            mockCore();
+        })
         test('When valid input provided, expect to return tdei_record_id for new record', async ()=>{
+            mockCore();
             let req = getMockReq({ body: {"meta":JSON.stringify(TdeiObjectFaker.getGtfsFlexPayload2()),"file": Buffer.from('whatever') }});
             req.file = TdeiObjectFaker.getMockUploadFile();
-            mockCore();
             const {res, next} = getMockRes()
             const dummyResponse =  <GtfsFlexDTO>{
                 tdei_record_id:"test_record_id"
             }
-            const createGtfsFlexSpy = jest.spyOn(gtfsFlexService,"createGtfsFlex").mockResolvedValueOnce(dummyResponse)
+            const createGtfsFlexSpy = jest.spyOn(gtfsFlexService,"createGtfsFlex").mockResolvedValueOnce(dummyResponse);
+            const storageCliSpy  = jest.spyOn(storageService,"uploadFile").mockResolvedValue('remote_url');
+            const uploadSpy = jest.spyOn(gtfsFlexController.eventBusService,"publishUpload").mockImplementation()
+
             await gtfsFlexController.createGtfsFlex(req,res,next)
             expect(createGtfsFlexSpy).toHaveBeenCalledTimes(1);
             expect(res.status).toBeCalledWith(200);
