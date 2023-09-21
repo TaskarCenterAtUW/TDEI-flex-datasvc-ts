@@ -133,7 +133,7 @@ describe("Flex Controller Test", () => {
 
             await gtfsFlexController.createGtfsFlex(req,res,next)
             expect(createGtfsFlexSpy).toHaveBeenCalledTimes(1);
-            expect(res.status).toBeCalledWith(200);
+            expect(res.status).toBeCalledWith(202);
         })
 
         test('When invalid meta is provided, expect to return 400 error', async ()=>{

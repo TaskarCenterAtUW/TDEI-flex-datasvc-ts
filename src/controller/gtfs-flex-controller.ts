@@ -148,7 +148,7 @@ class GtfsFlexController implements IController {
             this.eventBusService.publishUpload(gtfsdto,uid,remoteUrl,userId,metaUrl);
             // Also send the information to the queue
             console.log('Responding to request');
-            return response.status(200).send(uid);
+            return response.status(202).send(uid);
 
         } catch (error) {
             console.error('Error saving the flex file', error);
