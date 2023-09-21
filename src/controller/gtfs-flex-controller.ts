@@ -72,7 +72,7 @@ class GtfsFlexController implements IController {
             gtfsFlex.forEach(x => {
                 x.download_url = `${this.path}/${x.tdei_record_id}`;
             })
-            response.status(200).send(gtfsFlex);
+            response.status(202).send(gtfsFlex);
         } catch (error) {
             console.error("Error while fetching the flex information", error);
             if (error instanceof InputException) {
