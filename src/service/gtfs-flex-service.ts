@@ -8,7 +8,7 @@ import flexDbClient from "../database/flex-data-source";
 import { environment } from "../environment/environment";
 import UniqueKeyDbException from "../exceptions/db/database-exceptions";
 import HttpException from "../exceptions/http/http-base-exception";
-import { DuplicateException, OverlapException } from "../exceptions/http/http-exceptions";
+import { DuplicateException, OverlapException, ServiceNotFoundException } from "../exceptions/http/http-exceptions";
 import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
 import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
 import { ServiceDto } from "../model/service-dto";
@@ -88,7 +88,8 @@ class GtfsFlexService implements IGtfsFlexService {
             //Validate service_id 
             const service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_org_id);
             if (!service) {
-                throw new Error("Service id not found or inactive.");
+                // Service not found exception.
+                throw new ServiceNotFoundException(flexInfo.tdei_service_id);
             }
             else {
                 console.log("service object received");

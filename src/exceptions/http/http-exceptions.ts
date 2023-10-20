@@ -36,6 +36,12 @@ export class UserNotFoundException extends HttpException {
     }
 }
 
+export class ServiceNotFoundException extends HttpException {
+    constructor(serviceId: string) {
+        super(404, `Service ID ${serviceId} is not found or inactive`);
+    }
+}
+
 export class InputException extends HttpException {
     constructor(message: string) {
         super(400, message);
