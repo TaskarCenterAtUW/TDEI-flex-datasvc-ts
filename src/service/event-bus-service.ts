@@ -73,23 +73,14 @@ export class EventBusService implements IEventBusServiceInterface {
                         });
                     return Promise.resolve();
                 } else {
-                    gtfsFlexService.createGtfsFlex(flexVersions).then(async () => {
-                        console.info(`Flex record created successfully !`);
-                       await this.publish(messageReceived,
-                            {
-                                success: true,
-                                message: 'Flex request processed successfully !'
-                            });
-                        return Promise.resolve();
-                    }).catch(async (error: any) => {
-                        console.error('Error saving the flex version', error);
-                      await this.publish(messageReceived,
-                            {
-                                success: false,
-                                message: 'Error occured while processing flex request' + error
-                            });
-                        return Promise.resolve();
-                    });
+                    // No need to store. already stored in upload.
+                    console.info(`Flex record created successfully !`);
+                     this.publish(messageReceived,
+                         {
+                             success: true,
+                             message: 'Flex request processed successfully !'
+                         });
+                     return Promise.resolve();
                 }
             }).catch(async (error) => {
                 // Throw metadata validation errors
