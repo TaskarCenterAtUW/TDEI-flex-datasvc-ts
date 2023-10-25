@@ -143,7 +143,7 @@ class GtfsFlexService implements IGtfsFlexService {
             return ServiceDto.from(data.pop());
         } catch (error: any) {
             console.error(error);
-            throw new Error("Service id not found or inactive.");
+            throw new ServiceNotFoundException(serviceId)
         }
     }
 }
