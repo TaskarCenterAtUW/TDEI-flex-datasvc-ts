@@ -12,7 +12,7 @@ describe("Health Check", () => {
         //Assert
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledWith(
-            expect.stringContaining("I'm healthy !!")
+            expect.stringContaining("I'm Wealthy !!")
         );
     });
 });
