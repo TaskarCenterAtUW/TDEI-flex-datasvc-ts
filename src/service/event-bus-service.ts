@@ -37,7 +37,7 @@ export class EventBusService implements IEventBusServiceInterface {
             if (queueMessage.tdeiRecordId !== null && queueMessage.tdeiRecordId !== undefined) {
                 tdeiRecordId = queueMessage.tdeiRecordId;
             }
-            
+
 
             console.log("Received message for : ", queueMessage.tdeiRecordId, "Message received for flex processing !");
 
@@ -75,17 +75,17 @@ export class EventBusService implements IEventBusServiceInterface {
                 } else {
                     // No need to store. already stored in upload.
                     console.info(`Flex record created successfully !`);
-                     this.publish(messageReceived,
-                         {
-                             success: true,
-                             message: 'Flex request processed successfully !'
-                         });
-                     return Promise.resolve();
+                    this.publish(messageReceived,
+                        {
+                            success: true,
+                            message: 'Flex request processed successfully !'
+                        });
+                    return Promise.resolve();
                 }
             }).catch(async (error) => {
                 // Throw metadata validation errors
                 console.log('Failed to validate the flex versions');
-               await this.publish(messageReceived,
+                await this.publish(messageReceived,
                     {
                         success: false,
                         message: 'Error with metadata' + error
@@ -95,7 +95,7 @@ export class EventBusService implements IEventBusServiceInterface {
 
         } catch (error) {
             console.error(tdeiRecordId, 'Error occured while processing flex request', error);
-           await this.publish(messageReceived,
+            await this.publish(messageReceived,
                 {
                     success: false,
                     message: 'Error occured while processing flex request' + error
@@ -117,7 +117,7 @@ export class EventBusService implements IEventBusServiceInterface {
      * Subscribing to the interested topic & subscription to process the queue message
      */
     subscribeTopic(validationTopic: string = environment.eventBus.validationTopic as string, validationSubscription: string = environment.eventBus.validationSubscription as string): void {
-        Core.getTopic(environment.eventBus.validationTopic as string,
+        Core.getTopic(validationTopic,
             this.queueConfig)
             .subscribe(validationSubscription, {
                 onReceive: this.processUpload,
@@ -136,7 +136,7 @@ export class EventBusService implements IEventBusServiceInterface {
         queueMessageContent.response.success = response.success;
         queueMessageContent.response.message = response.message;
         // Dont publish during development
-       await this.publishingTopic.publish(QueueMessage.from(
+        await this.publishingTopic.publish(QueueMessage.from(
             {
                 messageType: 'flex-data-service',
                 data: queueMessageContent,
@@ -151,26 +151,26 @@ export class EventBusService implements IEventBusServiceInterface {
     /**
      * Publishes the upload of a gtfs-flex file
      */
-    public publishUpload(request:GtfsFlexUploadMeta, recordId:string,file_upload_path:string, userId:string, meta_file_path:string){
-       const messageContent =  QueueMessageContent.from({
-            stage:'flex-upload',
-            request:request,
-            userId:userId,
-            orgId:request.tdei_org_id,
-            tdeiRecordId:recordId,
-            meta:{
-                'file_upload_path':file_upload_path,
-                'meta_file_path':meta_file_path
+    public publishUpload(request: GtfsFlexUploadMeta, recordId: string, file_upload_path: string, userId: string, meta_file_path: string) {
+        const messageContent = QueueMessageContent.from({
+            stage: 'flex-upload',
+            request: request,
+            userId: userId,
+            projectGroupId: request.tdei_project_group_id,
+            tdeiRecordId: recordId,
+            meta: {
+                'file_upload_path': file_upload_path,
+                'meta_file_path': meta_file_path
             },
-            response:{
-                success:true,
-                message:'File uploaded for the organization: '+request.tdei_org_id+' with record id'+recordId
+            response: {
+                success: true,
+                message: 'File uploaded for the project group: ' + request.tdei_project_group_id + ' with record id' + recordId
             }
         });
         const message = QueueMessage.from(
             {
-                messageType:'gtfs-flex-upload',
-                data:messageContent,
+                messageType: 'gtfs-flex-upload',
+                data: messageContent,
 
             }
         )

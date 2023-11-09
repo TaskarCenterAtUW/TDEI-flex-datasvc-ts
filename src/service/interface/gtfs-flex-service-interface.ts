@@ -22,10 +22,10 @@ export interface IGtfsFlexService {
     createGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO>;
 
     /**
-     * Gets the service details for given orgid and serviceid
+     * Gets the service details for given projectGroupId and serviceid
      * @param serviceId service id uniquely represented by TDEI system
-     * @param orgId oraganization id uniquely represented by TDEI system
+     * @param projectGroupId oraganization id uniquely represented by TDEI system
      * @returns 
      */
-    getServiceById(serviceId: string, orgId: string): Promise<ServiceDto>;
+    getServiceById(serviceId: string, projectGroupId: string): Promise<ServiceDto>;
 }
