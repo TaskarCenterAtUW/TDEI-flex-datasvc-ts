@@ -98,7 +98,7 @@ class GtfsFlexService implements IGtfsFlexService {
 
             // Check if there is a record with the same date
             const queryResult = await flexDbClient.query(flexInfo.getOverlapQuery());
-            if (queryResult.rowCount > 0) {
+            if (queryResult.rowCount && queryResult.rowCount > 0) {
                 const recordId = queryResult.rows[0]["tdei_record_id"];
                 throw new OverlapException(recordId);
             }
