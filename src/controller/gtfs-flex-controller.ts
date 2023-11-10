@@ -32,10 +32,10 @@ const upload = multer({
     storage: memoryStorage(),
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname);
-        if(ext != '.zip') {
+        if (ext != '.zip') {
             cb(new FileTypeException());
         }
-        cb(null,true);
+        cb(null, true);
     },
 });
 
@@ -51,7 +51,7 @@ class GtfsFlexController implements IController {
         this.router.get(this.path, this.getAllGtfsFlex);
         this.router.get(`${this.path}/:id`, this.getGtfsFlexById);
         this.router.get(`${this.path}/versions/info`, this.getVersions);
-        this.router.post(this.path,upload.single('file'),metajsonValidator,tokenValidator,this.createGtfsFlex);
+        this.router.post(this.path, upload.single('file'), metajsonValidator, tokenValidator, this.createGtfsFlex);
     }
 
     getVersions = async (request: Request, response: express.Response, next: NextFunction) => {
@@ -62,7 +62,7 @@ class GtfsFlexController implements IController {
         }]);
 
         response.status(200).send(versionsList);
-       
+
     }
 
     getAllGtfsFlex = async (request: Request, response: express.Response, next: NextFunction) => {
@@ -120,8 +120,8 @@ class GtfsFlexController implements IController {
             const gtfsdto = GtfsFlexUploadMeta.from(meta);
             const result = await validate(gtfsdto);
             console.log('result', result);
-        
-            if(result.length != 0){
+
+            if (result.length != 0) {
                 console.log('Metadata validation failed');
                 console.log(result);
                 // Need to send these as response
@@ -130,13 +130,13 @@ class GtfsFlexController implements IController {
             }
             // Generate the files and upload them
             const uid = storageService.generateRandomUUID(); // Fetches a random UUID for the record
-            const folderPath = storageService.getFolderPath(gtfsdto.tdei_org_id,uid);
+            const folderPath = storageService.getFolderPath(gtfsdto.tdei_project_group_id, uid);
             const uploadedFile = request.file;
-            const uploadPath = path.join(folderPath,uploadedFile!.originalname)
-            const remoteUrl = await storageService.uploadFile(uploadPath,'application/zip',Readable.from(uploadedFile!.buffer))
+            const uploadPath = path.join(folderPath, uploadedFile!.originalname)
+            const remoteUrl = await storageService.uploadFile(uploadPath, 'application/zip', Readable.from(uploadedFile!.buffer))
             // Upload the meta file  
-            const metaFilePath = path.join(folderPath,'meta.json');
-            const metaUrl = await storageService.uploadFile(metaFilePath,'text/json',gtfsdto.getStream());
+            const metaFilePath = path.join(folderPath, 'meta.json');
+            const metaUrl = await storageService.uploadFile(metaFilePath, 'text/json', gtfsdto.getStream());
             // Insert into database
             const flex = FlexVersions.from(meta);
             flex.tdei_record_id = uid;
@@ -145,16 +145,15 @@ class GtfsFlexController implements IController {
             const returnInfo = await gtfsFlexService.createGtfsFlex(flex);
 
             // Publish to the topic
-            this.eventBusService.publishUpload(gtfsdto,uid,remoteUrl,userId,metaUrl);
+            this.eventBusService.publishUpload(gtfsdto, uid, remoteUrl, userId, metaUrl);
             // Also send the information to the queue
             console.log('Responding to request');
             return response.status(202).send(uid);
 
         } catch (error) {
             console.error('Error saving the flex file', error);
-           
-            if (error instanceof HttpException)
-            {
+
+            if (error instanceof HttpException) {
                 next(error)
             }
             else {

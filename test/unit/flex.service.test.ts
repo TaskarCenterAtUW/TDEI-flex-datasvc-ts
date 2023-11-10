@@ -51,9 +51,8 @@ describe("Flex Service Test", () => {
                 params.page_no = 1;
                 params.page_size = 10;
                 params.date_time = "03-03-2023";
-                params.tdei_org_id = "test_id";
+                params.tdei_project_group_id = "test_id";
                 params.tdei_record_id = "test_id";
-                params.tdei_org_id = "test_id";
                 params.flex_schema_version = "v2.0";
                 params.bbox = [1, 2, 3, 4]
                 //Act
@@ -71,16 +70,16 @@ describe("Flex Service Test", () => {
                         flexObj
                     ]
                 };
-                    jest
+                jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
                 const params: FlexQueryParams = new FlexQueryParams();
                 params.page_no = 1;
                 params.page_size = 10;
                 params.date_time = "13-13-2023";
-                params.tdei_org_id = "test_id";
+                params.tdei_project_group_id = "test_id";
                 params.tdei_record_id = "test_id";
-                params.tdei_org_id = "test_id";
+                params.tdei_project_group_id = "test_id";
                 params.flex_schema_version = "v2.0";
                 params.bbox = [1, 2, 3, 4]
                 //Act
@@ -96,16 +95,16 @@ describe("Flex Service Test", () => {
                         flexObj
                     ]
                 };
-                    jest
+                jest
                     .spyOn(flexDbClient, "query")
                     .mockResolvedValueOnce(dummyResponse);
                 const params: FlexQueryParams = new FlexQueryParams();
                 params.page_no = 1;
                 params.page_size = 10;
                 params.date_time = "03-03-2023";
-                params.tdei_org_id = "test_id";
+                params.tdei_project_group_id = "test_id";
                 params.tdei_record_id = "test_id";
-                params.tdei_org_id = "test_id";
+                params.tdei_project_group_id = "test_id";
                 params.flex_schema_version = "v2.0";
                 params.bbox = [1, 2]
                 //Act
@@ -205,7 +204,7 @@ describe("Flex Service Test", () => {
                 expect(result instanceof GtfsFlexDTO);
             });
 
-            test("When database exception with duplicate tdei_org_id occured while processing request, Expect to throw DuplicateException", async () => {
+            test("When database exception with duplicate tdei_project_group_id occured while processing request, Expect to throw DuplicateException", async () => {
                 //Arrange
                 const flexObj = FlexVersions.from(TdeiObjectFaker.getGtfsFlexVersion());
 
@@ -256,7 +255,7 @@ describe("Flex Service Test", () => {
                 }));
                 mockUtility();
                 //Act
-                const result = await flexService.getServiceById("test_service_id", "test_org_id");
+                const result = await flexService.getServiceById("test_service_id", "test_project_group_id");
                 //Assert
                 expect(result instanceof ServiceDto);
             });
@@ -269,9 +268,9 @@ describe("Flex Service Test", () => {
                 }));
                 mockUtility();
                 //Act
-                //var result = await flexService.getServiceById("test_service_id", "test_org_id");
+                //var result = await flexService.getServiceById("test_service_id", "test_project_group_id");
                 //Assert
-                await expect(flexService.getServiceById("test_service_id", "test_org_id")).rejects.toThrowError();
+                await expect(flexService.getServiceById("test_service_id", "test_project_group_id")).rejects.toThrowError();
             });
 
             test("When requested invalid service id, Expect to throw error", async () => {
@@ -283,7 +282,7 @@ describe("Flex Service Test", () => {
                 mockUtility();
                 //Act
                 //Assert
-                await expect(flexService.getServiceById("test_service_id", "test_org_id")).rejects.toThrowError();
+                await expect(flexService.getServiceById("test_service_id", "test_project_group_id")).rejects.toThrowError();
             });
 
             test("When external service get call fails with 400 HTTP status, Expect to throw error", async () => {
@@ -295,7 +294,7 @@ describe("Flex Service Test", () => {
                 mockUtility();
                 //Act
                 //Assert
-                await expect(flexService.getServiceById("test_service_id", "test_org_id")).rejects.toThrowError();
+                await expect(flexService.getServiceById("test_service_id", "test_project_group_id")).rejects.toThrowError();
             });
         });
     });

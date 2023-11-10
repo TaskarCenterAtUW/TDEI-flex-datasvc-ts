@@ -80,13 +80,13 @@ class GtfsFlexService implements IGtfsFlexService {
     */
     async createGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
         try {
-            
+
             if (flexInfo.file_upload_path !== undefined && flexInfo.file_upload_path !== null) {
                 flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path);
             }
-            
+
             //Validate service_id 
-            const service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_org_id);
+            const service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_project_group_id);
             if (!service) {
                 // Service not found exception.
                 throw new ServiceNotFoundException(flexInfo.tdei_service_id);
@@ -98,7 +98,7 @@ class GtfsFlexService implements IGtfsFlexService {
 
             // Check if there is a record with the same date
             const queryResult = await flexDbClient.query(flexInfo.getOverlapQuery());
-            if (queryResult.rowCount > 0) {
+            if (queryResult.rowCount && queryResult.rowCount > 0) {
                 const recordId = queryResult.rows[0]["tdei_record_id"];
                 throw new OverlapException(recordId);
             }
@@ -119,15 +119,15 @@ class GtfsFlexService implements IGtfsFlexService {
     }
 
     /**
-     * Gets the service details for given orgid and serviceid
+     * Gets the service details for given projectGroupId and serviceid
      * @param serviceId service id uniquely represented by TDEI system
-     * @param orgId oraganization id uniquely represented by TDEI system
+     * @param projectGroupId oraganization id uniquely represented by TDEI system
      * @returns 
      */
-    async getServiceById(serviceId: string, orgId: string): Promise<ServiceDto> {
+    async getServiceById(serviceId: string, projectGroupId: string): Promise<ServiceDto> {
         try {
             const secretToken = await Utility.generateSecret();
-            const result = await fetch(`${environment.serviceUrl}?tdei_service_id=${serviceId}&tdei_org_id=${orgId}&page_no=1&page_size=1`, {
+            const result = await fetch(`${environment.serviceUrl}?tdei_service_id=${serviceId}&tdei_project_group_id=${projectGroupId}&page_no=1&page_size=1`, {
                 method: 'get',
                 headers: { 'Content-Type': 'application/json', 'x-secret': secretToken }
             });

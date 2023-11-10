@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS public.flex_versions
 	id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     tdei_record_id character varying COLLATE pg_catalog."default" NOT NULL,
     confidence_level integer DEFAULT 0,
-    tdei_org_id character varying COLLATE pg_catalog."default" NOT NULL,
+    tdei_project_group_id character varying COLLATE pg_catalog."default" NOT NULL,
     tdei_service_id character varying COLLATE pg_catalog."default" NOT NULL,
     file_upload_path character varying COLLATE pg_catalog."default" NOT NULL,
     uploaded_by character varying COLLATE pg_catalog."default" NOT NULL,

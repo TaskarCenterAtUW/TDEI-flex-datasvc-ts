@@ -9,7 +9,7 @@ export class ServiceDto extends BaseDto {
     tdei_service_id = "0";
     @IsNotEmpty()
     @Prop()
-    tdei_org_id!: string;
+    tdei_project_group_id!: string;
     @IsNotEmpty()
     @Prop("service_name")
     service_name!: string;

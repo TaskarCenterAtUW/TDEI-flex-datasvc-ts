@@ -6,7 +6,7 @@
     "data": {
         "stage": "Flex-Upload",
         "request": {
-            "tdei_org_id": "0c29017c-f0b9-433e-ae13-556982f2520b",
+            "tdei_project_group_id": "0c29017c-f0b9-433e-ae13-556982f2520b",
             "tdei_service_id": "9066ad72-d044-4199-9f6c-b71f75ece7e8",
             "collected_by": "test user",
             "collection_date": "2023-03-03T02:22:45.374Z",
@@ -56,10 +56,10 @@
         },
         "response": {
             "success": true,
-            "message": "File uploaded for the Organization : 0c29017c-f0b9-433e-ae13-556982f2520b with tdei record id : d49e2baad08b4e80af2b512110e2081b"
+            "message": "File uploaded for the project group : 0c29017c-f0b9-433e-ae13-556982f2520b with tdei record id : d49e2baad08b4e80af2b512110e2081b"
         },
         "tdei_record_id": "d49e2baad08b4e80af2b512110e2081b",
-        "tdei_org_id": "0c29017c-f0b9-433e-ae13-556982f2520b",
+        "tdei_project_group_id": "0c29017c-f0b9-433e-ae13-556982f2520b",
         "user_id": "c59d29b6-a063-4249-943f-d320d15ac9ab"
     }
 }

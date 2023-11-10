@@ -18,7 +18,7 @@ describe("Flex Integration Test", () => {
         done();
     });
 
-    beforeAll(()=>{
+    beforeAll(() => {
         Core.initialize();
     })
 
@@ -39,7 +39,7 @@ describe("Flex Integration Test", () => {
         //Arrange
         var messageReceiver!: QueueMessage;
 
-        
+
         var topicToSubscribe = Core.getTopic("temp-validation", {
             provider: "Azure"
         });
@@ -56,7 +56,7 @@ describe("Flex Integration Test", () => {
         mockQueueMessageContent();
 
         var dummyResponse = <GtfsFlexDTO>{
-            tdei_record_id: "test_record_id"  
+            tdei_record_id: "test_record_id"
         };
 
         //Mock DB call
@@ -66,7 +66,7 @@ describe("Flex Integration Test", () => {
 
         //Wait for message to process
         async function assertMessage() {
-           await setTimeout(20000);
+            await setTimeout(20000);
             return Promise.resolve(messageReceiver?.data?.response?.success);
         }
 
@@ -80,10 +80,10 @@ describe("Flex Integration Test", () => {
     }, 60000);
 
 
-     /**
-     * Environement dependency 
-     * AUTH_HOST
-     */
+    /**
+    * Environement dependency 
+    * AUTH_HOST
+    */
     test("Verifying auth service hasPermission api integration", async () => {
         //Pre-requisite environment dependency
         if (!process.env.AUTH_HOST) {
@@ -95,7 +95,7 @@ describe("Flex Integration Test", () => {
         //Arrange
         var permissionRequest = new PermissionRequest({
             userId: "test_userId",
-            orgId: "test_orgId",
+            projectGroupId: "test_projectGroupId",
             permssions: ["tdei-admin", "poc", "flex_data_generator"],
             shouldSatisfyAll: false
         });
@@ -106,11 +106,11 @@ describe("Flex Integration Test", () => {
         expect(response).toBeFalsy();
     }, 15000);
 
-     /**
-     * Environement dependency 
-     * AUTH_HOST
-     */
-     test("Verifying auth service generate secret api integration", async () => {
+    /**
+    * Environement dependency 
+    * AUTH_HOST
+    */
+    test("Verifying auth service generate secret api integration", async () => {
         //Pre-requisite environment dependency
         if (!process.env.AUTH_HOST) {
             console.error("AUTH_HOST environment not set");
@@ -126,11 +126,11 @@ describe("Flex Integration Test", () => {
         expect(getSecret.status == 200).toBeTruthy();
     }, 15000);
 
-     /**
-     * Environement dependency 
-     * STATION_URL
-     */
-     test("Verifying service get service api integration", async () => {
+    /**
+    * Environement dependency 
+    * STATION_URL
+    */
+    test("Verifying service get service api integration", async () => {
         //Pre-requisite environment dependency
         if (!process.env.SERVICE_URL) {
             console.error("SERVICE_URL environment not set");
@@ -141,7 +141,7 @@ describe("Flex Integration Test", () => {
         //Arrange
         let secretToken = await Utility.generateSecret();
         //Act
-        const result = await fetch(`${environment.serviceUrl}?tdei_service_id=test-serviceId&tdei_org_id=test-orgId&page_no=1&page_size=1`, {
+        const result = await fetch(`${environment.serviceUrl}?tdei_service_id=test-serviceId&tdei_project_group_id=test-projectGroupId&page_no=1&page_size=1`, {
             method: 'get',
             headers: { 'Content-Type': 'application/json', 'x-secret': secretToken }
         });
@@ -159,5 +159,5 @@ describe("Flex Integration Test", () => {
         // expect(bufferLength).toBeGreaterThan(0);
         expect(streamData).toBeTruthy();
 
-    },20000);
+    }, 20000);
 });

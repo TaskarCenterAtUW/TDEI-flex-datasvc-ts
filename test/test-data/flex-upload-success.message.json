@@ -8,7 +8,7 @@
             "collected_by": "testuser",
             "collection_date": "2023-03-02T04:22:42.493Z",
             "tdei_service_id": "a73d0a95-f9e2-4067-b4c9-a1f82419e82e",
-            "tdei_org_id": "e1956869-02d9-4e14-8391-6024406ced41",
+            "tdei_project_group_id": "e1956869-02d9-4e14-8391-6024406ced41",
             "collection_method": "manual",
             "data_source": "TDEITools",
             "polygon": {
@@ -51,11 +51,11 @@
         },
         "tdei_record_id": "f010522478564cd7b241f29d2604f445",
         "user_id": "testuser",
-        "tdei_org_id": "e1956869-02d9-4e14-8391-6024406ced41",
+        "tdei_project_group_id": "e1956869-02d9-4e14-8391-6024406ced41",
         "stage": "flex-upload",
         "response": {
             "success": true,
-            "message": "File uploaded for the organization: e1956869-02d9-4e14-8391-6024406ced41 with record idf010522478564cd7b241f29d2604f445"
+            "message": "File uploaded for the project group: e1956869-02d9-4e14-8391-6024406ced41 with record idf010522478564cd7b241f29d2604f445"
         },
         "meta": {
             "file_upload_path": "2023/7/e1956869-02d9-4e14-8391-6024406ced41/f010522478564cd7b241f29d2604f445/success_1_all_attrs.zip"
