@@ -8,7 +8,7 @@ import flexDbClient from "../database/flex-data-source";
 import { environment } from "../environment/environment";
 import UniqueKeyDbException from "../exceptions/db/database-exceptions";
 import HttpException from "../exceptions/http/http-base-exception";
-import { DuplicateException, OverlapException } from "../exceptions/http/http-exceptions";
+import { DuplicateException, OverlapException, ServiceNotFoundException } from "../exceptions/http/http-exceptions";
 import { GtfsFlexDTO } from "../model/gtfs-flex-dto";
 import { FlexQueryParams } from "../model/gtfs-flex-get-query-params";
 import { ServiceDto } from "../model/service-dto";
@@ -16,8 +16,6 @@ import { Utility } from "../utility/utility";
 import { IGtfsFlexService } from "./interface/gtfs-flex-service-interface";
 
 class GtfsFlexService implements IGtfsFlexService {
-    constructor() {
-    }
 
     /**
     * Gets the GTFS Flex details
@@ -25,21 +23,21 @@ class GtfsFlexService implements IGtfsFlexService {
     */
     async getAllGtfsFlex(params: FlexQueryParams): Promise<GtfsFlexDTO[]> {
         //Builds the query object. All the query consitions can be build in getQueryObject()
-        let queryObject = params.getQueryObject();
+        const queryObject = params.getQueryObject();
 
-        let queryConfig = <QueryConfig>{
+        const queryConfig = <QueryConfig>{
             text: queryObject.getQuery(),
             values: queryObject.getValues()
         }
 
-        let result = await flexDbClient.query(queryConfig);
+        const result = await flexDbClient.query(queryConfig);
 
-        let list: GtfsFlexDTO[] = [];
+        const list: GtfsFlexDTO[] = [];
         result.rows.forEach(x => {
 
-            let flex = GtfsFlexDTO.from(x);
+            const flex = GtfsFlexDTO.from(x);
             if (flex.polygon) {
-                var polygon = JSON.parse(x.polygon2) as Geometry;
+                const polygon = JSON.parse(x.polygon2) as Geometry;
                 flex.polygon = {
                     type: "FeatureCollection",
                     features: [
@@ -66,13 +64,13 @@ class GtfsFlexService implements IGtfsFlexService {
             values: [id],
         }
 
-        let result = await flexDbClient.query(query);
+        const result = await flexDbClient.query(query);
 
         if (result.rows.length == 0) throw new HttpException(404, "Record not found");
 
         const storageClient = Core.getStorageClient();
-        if (storageClient == null) throw console.error("Storage not configured");
-        let url: string = decodeURIComponent(result.rows[0].file_upload_path);
+        if (storageClient == null) throw new Error("Storage not configured");
+        const url: string = decodeURIComponent(result.rows[0].file_upload_path);
         return storageClient.getFileFromUrl(url);
     }
 
@@ -80,14 +78,18 @@ class GtfsFlexService implements IGtfsFlexService {
     * Creates new GTFS Flex in the TDEI system.
     * @param flexInfo GTFS Flex object 
     */
-    async createAGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
+    async createGtfsFlex(flexInfo: FlexVersions): Promise<GtfsFlexDTO> {
         try {
-            flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path!);
+
+            if (flexInfo.file_upload_path !== undefined && flexInfo.file_upload_path !== null) {
+                flexInfo.file_upload_path = decodeURIComponent(flexInfo.file_upload_path);
+            }
 
             //Validate service_id 
-            let service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_org_id);
+            const service = await this.getServiceById(flexInfo.tdei_service_id, flexInfo.tdei_project_group_id);
             if (!service) {
-                throw new Error("Service id not found or inactive.");
+                // Service not found exception.
+                throw new ServiceNotFoundException(flexInfo.tdei_service_id);
             }
             else {
                 console.log("service object received");
@@ -95,14 +97,14 @@ class GtfsFlexService implements IGtfsFlexService {
             }
 
             // Check if there is a record with the same date
-            const queryResult =  await flexDbClient.query(flexInfo.getOverlapQuery());
-            if(queryResult.rowCount > 0) {
+            const queryResult = await flexDbClient.query(flexInfo.getOverlapQuery());
+            if (queryResult.rowCount && queryResult.rowCount > 0) {
                 const recordId = queryResult.rows[0]["tdei_record_id"];
                 throw new OverlapException(recordId);
             }
             await flexDbClient.query(flexInfo.getInsertQuery());
 
-            let flex = GtfsFlexDTO.from(flexInfo);
+            const flex = GtfsFlexDTO.from(flexInfo);
             return Promise.resolve(flex);
         } catch (error) {
 
@@ -116,10 +118,16 @@ class GtfsFlexService implements IGtfsFlexService {
 
     }
 
-    private async getServiceById(serviceId: string, orgId: string): Promise<ServiceDto> {
+    /**
+     * Gets the service details for given projectGroupId and serviceid
+     * @param serviceId service id uniquely represented by TDEI system
+     * @param projectGroupId oraganization id uniquely represented by TDEI system
+     * @returns 
+     */
+    async getServiceById(serviceId: string, projectGroupId: string): Promise<ServiceDto> {
         try {
-            let secretToken = await Utility.generateSecret();
-            const result = await fetch(`${environment.serviceUrl}?tdei_service_id=${serviceId}&tdei_org_id=${orgId}&page_no=1&page_size=1`, {
+            const secretToken = await Utility.generateSecret();
+            const result = await fetch(`${environment.serviceUrl}?tdei_service_id=${serviceId}&tdei_project_group_id=${projectGroupId}&page_no=1&page_size=1`, {
                 method: 'get',
                 headers: { 'Content-Type': 'application/json', 'x-secret': secretToken }
             });
@@ -135,7 +143,7 @@ class GtfsFlexService implements IGtfsFlexService {
             return ServiceDto.from(data.pop());
         } catch (error: any) {
             console.error(error);
-            throw new Error("Service id not found or inactive.");
+            throw new ServiceNotFoundException(serviceId)
         }
     }
 }

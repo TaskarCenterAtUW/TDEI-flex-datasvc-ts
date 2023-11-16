@@ -11,10 +11,10 @@ export class FlexVersions extends BaseDto {
     @Prop()
     @IsNotEmpty()
     tdei_record_id!: string;
-    confidence_level: number = 0;
+    confidence_level = 0;
     @Prop()
     @IsNotEmpty()
-    tdei_org_id!: string;
+    tdei_project_group_id!: string;
     @Prop()
     @IsNotEmpty()
     tdei_service_id!: string;
@@ -60,11 +60,11 @@ export class FlexVersions extends BaseDto {
      * @returns QueryConfig object
      */
     getInsertQuery(): QueryConfig {
-        let polygonExists = this.polygon ? true : false;
+        const polygonExists = this.polygon ? true : false;
         const queryObject = {
             text: `INSERT INTO public.flex_versions(tdei_record_id, 
                 confidence_level, 
-                tdei_org_id, 
+                tdei_project_group_id, 
                 tdei_service_id, 
                 file_upload_path, 
                 uploaded_by,
@@ -73,7 +73,7 @@ export class FlexVersions extends BaseDto {
                 collection_method, valid_from, valid_to, data_source,
                 flex_schema_version ${polygonExists ? ', polygon ' : ''})
                 VALUES ($1,0,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12 ${polygonExists ? ', ST_GeomFromGeoJSON($13) ' : ''})`.replace(/\n/g, ""),
-            values: [this.tdei_record_id, this.tdei_org_id, this.tdei_service_id, this.file_upload_path, this.uploaded_by
+            values: [this.tdei_record_id, this.tdei_project_group_id, this.tdei_service_id, this.file_upload_path, this.uploaded_by
                 , this.collected_by, this.collection_date, this.collection_method, this.valid_from, this.valid_to, this.data_source, this.flex_schema_version],
         }
         if (polygonExists) {
@@ -98,13 +98,13 @@ export class FlexVersions extends BaseDto {
     getOverlapQuery(): QueryConfig {
         const fromDate = new Date(this.valid_from);
         const toDate = new Date(this.valid_to);
-        
+
         const queryObject = {
-            text:`SELECT tdei_record_id from public.flex_versions where 
-            tdei_org_id = $1 
+            text: `SELECT tdei_record_id from public.flex_versions where 
+            tdei_project_group_id = $1 
             AND tdei_service_id = $2 
             AND (valid_from,valid_to) OVERLAPS ($3 , $4)`,
-            values:[this.tdei_org_id,this.tdei_service_id,fromDate, toDate]
+            values: [this.tdei_project_group_id, this.tdei_service_id, fromDate, toDate]
         };
         return queryObject;
     }

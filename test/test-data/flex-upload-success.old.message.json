@@ -1,0 +1,65 @@
+{
+    "messageId": "3b8c2304-d48d-4b9f-b5ab-db9b1bfed4cf",
+    "messageType": "gtfs-flex-upload",
+    "publishedDate": "2023-04-17T03:24:45.369168436Z",
+    "message": "",
+    "data": {
+        "stage": "Flex-Upload",
+        "request": {
+            "tdei_project_group_id": "0c29017c-f0b9-433e-ae13-556982f2520b",
+            "tdei_service_id": "9066ad72-d044-4199-9f6c-b71f75ece7e8",
+            "collected_by": "test user",
+            "collection_date": "2023-03-03T02:22:45.374Z",
+            "collection_method": "manual",
+            "valid_from": "2023-03-02T04:22:42.493Z",
+            "valid_to": "2023-03-02T04:22:42.493Z",
+            "data_source": "InHouse",
+            "polygon": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        76.522909,
+                                        14.811957
+                                    ],
+                                    [
+                                        76.257095,
+                                        13.616861
+                                    ],
+                                    [
+                                        73.116645,
+                                        13.25647
+                                    ],
+                                    [
+                                        70.267898,
+                                        12.595897
+                                    ],
+                                    [
+                                        76.522909,
+                                        14.811957
+                                    ]
+                                ]
+                            ]
+                        }
+                    }
+                ]
+            },
+            "flex_schema_version": "v2.0"
+        },
+        "meta": {
+            "file_upload_path": "https://tdeisamplestorage.blob.core.windows.net/gtfsflex/2023%2FAPRIL%2F0c29017c-f0b9-433e-ae13-556982f2520b%2Fflex-test-upload_d49e2baad08b4e80af2b512110e2081b.zip"
+        },
+        "response": {
+            "success": true,
+            "message": "File uploaded for the project group : 0c29017c-f0b9-433e-ae13-556982f2520b with tdei record id : d49e2baad08b4e80af2b512110e2081b"
+        },
+        "tdei_record_id": "d49e2baad08b4e80af2b512110e2081b",
+        "tdei_project_group_id": "0c29017c-f0b9-433e-ae13-556982f2520b",
+        "user_id": "c59d29b6-a063-4249-943f-d320d15ac9ab"
+    }
+}

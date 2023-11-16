@@ -1,0 +1,64 @@
+{
+    "messageId": null,
+    "messageType": "gtfs-flex-upload",
+    "publishedDate": "2023-07-31T09:50:47.713Z",
+    "message": null,
+    "data": {
+        "request": {
+            "collected_by": "testuser",
+            "collection_date": "2023-03-02T04:22:42.493Z",
+            "tdei_service_id": "a73d0a95-f9e2-4067-b4c9-a1f82419e82e",
+            "tdei_project_group_id": "e1956869-02d9-4e14-8391-6024406ced41",
+            "collection_method": "manual",
+            "data_source": "TDEITools",
+            "polygon": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {},
+                        "geometry": {
+                            "coordinates": [
+                                [
+                                    [
+                                        -122.16214567229673,
+                                        47.674335369752754
+                                    ],
+                                    [
+                                        -122.16214567229673,
+                                        47.66421552524781
+                                    ],
+                                    [
+                                        -122.14711788984943,
+                                        47.66421552524781
+                                    ],
+                                    [
+                                        -122.14711788984943,
+                                        47.674335369752754
+                                    ],
+                                    [
+                                        -122.16214567229673,
+                                        47.674335369752754
+                                    ]
+                                ]
+                            ],
+                            "type": "Polygon"
+                        }
+                    }
+                ]
+            },
+            "flex_schema_version": "v2.0"
+        },
+        "tdei_record_id": "f010522478564cd7b241f29d2604f445",
+        "user_id": "testuser",
+        "tdei_project_group_id": "e1956869-02d9-4e14-8391-6024406ced41",
+        "stage": "flex-upload",
+        "response": {
+            "success": true,
+            "message": "File uploaded for the project group: e1956869-02d9-4e14-8391-6024406ced41 with record idf010522478564cd7b241f29d2604f445"
+        },
+        "meta": {
+            "file_upload_path": "2023/7/e1956869-02d9-4e14-8391-6024406ced41/f010522478564cd7b241f29d2604f445/success_1_all_attrs.zip"
+        }
+    }
+}
